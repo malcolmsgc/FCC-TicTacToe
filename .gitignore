@@ -1,5 +1,8 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
+# ignore css as using sass
+src/**/*.css
+
 #VS Code workspace config
 /.vscode/settings.json
 
