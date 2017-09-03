@@ -3,9 +3,6 @@
 # ignore css as using sass
 src/**/*.css
 
-#VS Code workspace config
-/.vscode/settings.json
-
 # dependencies
 /node_modules
 
