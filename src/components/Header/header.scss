@@ -1,8 +1,11 @@
+@import '../../vars.scss';
+
 header {
-    background-color: yellow;
+    background-color: $color-yellow;
 }
 
 h1 {
     font-size: 4em;
-    font-family: Arial, sans-serif;
+    font-family: $font-stack1;
+    margin: 0;
 }

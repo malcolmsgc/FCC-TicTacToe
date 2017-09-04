@@ -1,0 +1,9 @@
+@import './vars.scss';
+
+.App {
+    background-color: $color-background;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    align-items: stretch;
+}

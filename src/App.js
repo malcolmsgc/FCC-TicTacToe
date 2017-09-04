@@ -4,6 +4,7 @@ import Header from './components/Header/Header.js';
 import NumPlayers from './screens/NumPlayers.js';
 import EnterName from './screens/EnterName.js';
 import notFound from './screens/notFound.js';
+import './app.css';
 
 class App extends React.Component {
   render() {
