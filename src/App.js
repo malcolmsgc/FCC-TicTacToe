@@ -14,7 +14,7 @@ class App extends React.Component {
         <BrowserRouter>
           <Switch>
             <Route exact path="/" component={NumPlayers} />
-            <Route path="/names" component={EnterName} />
+            <Route path="/names" render={ () => <EnterName playerNum={1}/> } />
             <Route component ={notFound} />
           </Switch>
         </BrowserRouter>

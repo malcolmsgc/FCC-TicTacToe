@@ -6,9 +6,11 @@ class NumPlayers extends React.Component {
     
     render() {
         return (
-            <MessageBlock messageText="How many players?"/>
-            <BaseButton buttonType="button" messageText="1 Player"/>
-            <BaseButton buttonType="button" messageText="2 Players"/>
+            <div>
+                <MessageBlock messageText="How many players?"/>
+                <BaseButton buttonType="button" buttonText="1 Player"/>
+                <BaseButton buttonType="button" buttonText="2 Players"/>
+            </div>
         )
     }
 
