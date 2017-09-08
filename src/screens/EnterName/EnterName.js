@@ -11,7 +11,7 @@ class EnterName extends React.Component {
     render() {
         return (
             <div className="EnterName">
-                <ShareLinkBlock player2Link="http://www.cnjcbeiucdcvde.cdnscibu.cndochudoaheo#jcido" />
+                <ShareLinkBlock player2Link="http://www.cnjcbeiucdcvde.cdnscibu.cndochudoaheo#jcido" showBlock={true} />
                 <MessageBlock messageText={`Player ${this.props.playerNum}, enter your name!`} />
                 <EnterNameForm playerNum={this.props.playerNum} />
             </div>
