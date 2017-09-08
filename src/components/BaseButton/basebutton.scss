@@ -1,0 +1,15 @@
+@import '../../vars.scss';
+
+button, .btn {
+    min-width: 20em;
+    min-height: 5em;
+    background-color: $color-base-button;
+    border: 1px solid #4F4F4F;
+    border-radius: 10px;
+    box-shadow: inset 2px 2px 2px #566271,  
+                inset -1px -1px 2px #F2F2F2;
+    font-family: $font-stack1;
+    color: $color-yellow;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
