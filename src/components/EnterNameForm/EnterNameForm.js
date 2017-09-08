@@ -1,8 +1,8 @@
 import React from 'react';
-import BaseButton from '../components/BaseButton/BaseButton.js';
-import MessageBlock from '../components/MessageBlock/MessageBlock.js';
+import BaseButton from '../BaseButton/BaseButton.js';
+import './enternameform.css';
 
-class EnterName extends React.Component {
+class EnterNameForm extends React.Component {
 
     getName(e) {
         e.preventDefault(); 
@@ -12,8 +12,8 @@ class EnterName extends React.Component {
     render() {
         return (
             <form className="enter-name" onSubmit={(e) => {this.getName(e)} } >
-                <input type="text"  className="player-name" 
-                                    placeholder={`Player ${this.props.playerNum}`} 
+                <input type="textarea"  className="player-name" 
+                                    placeholder={`Player ${this.props.playerNum}'s name`} 
                                     defaultValue={`Player ${this.props.playerNum}`}
                                     ref={(input) => {this.playerNameInput = input;}} />
                 <BaseButton buttonType="submit" buttonText="Continue"/>
@@ -24,4 +24,4 @@ class EnterName extends React.Component {
 }
        
 
-export default EnterName;
+export default EnterNameForm;

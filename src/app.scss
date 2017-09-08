@@ -1,10 +1,10 @@
 @import './vars.scss';
+// Import assets
+@import url('https://fonts.googleapis.com/css?family=Press+Start+2P');
+// ENDOF import assets
 
 .App {
     background-color: $color-background;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-between;
-    align-items: stretch;
     min-height: 100vh;
+    text-align: center;
 }

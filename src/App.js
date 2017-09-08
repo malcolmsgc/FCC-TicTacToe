@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Link, Switch } from 'react-router-dom';
 import Header from './components/Header/Header.js';
 import NumPlayers from './screens/NumPlayers.js';
-import EnterName from './screens/EnterName.js';
+import EnterName from './screens/EnterName/EnterName.js';
 import notFound from './screens/notFound.js';
 import './app.css';
 
@@ -18,7 +18,6 @@ class App extends React.Component {
             <Route component ={notFound} />
           </Switch>
         </BrowserRouter>
-        
       </div>
     );
   }

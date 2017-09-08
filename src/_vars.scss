@@ -1,13 +1,25 @@
-/* Palette */
+// Palette
 
 $color-background: #040404;
 $color-yellow: #F2B90C;
 $color-player1: #0E0EC9;
 $color-player2: #AD1111;
 $color-base-button: #333333;
+$sharelink-bg: #ec555b;
 
-/* Fonts */
-@import url('https://fonts.googleapis.com/css?family=Press+Start+2P');
+// Fonts 
 $font-stack1: "Press Start 2P", "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;
 $font-stack2: Arial, "Helvetica Neue", Helvetica, sans-serif;
+
+
+// Mix-ins
+
+@mixin main-wrapper {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    align-items: stretch;
+    min-height: 50vh;
+    max-height: 90vh;
+}
 
