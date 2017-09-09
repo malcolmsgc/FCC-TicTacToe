@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Link, Switch } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import Header from './components/Header/Header.js';
 import NumPlayers from './screens/NumPlayers.js';
 import EnterName from './screens/EnterName/EnterName.js';
@@ -22,7 +23,7 @@ class App extends React.Component {
         useX: undefined, //boolean
         won: 0,
         lost: 0,
-        playerIsComputer: false;
+        playerIsComputer: false
       },
       gamesPlayed: 0,
       player2Link: ''
@@ -43,6 +44,10 @@ class App extends React.Component {
       </div>
     );
   }
+}
+
+App.contextTypes = {
+  router: PropTypes.object
 }
 
 export default App;
