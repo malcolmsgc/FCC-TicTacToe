@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './basebutton.css';
 
 class BaseButton extends React.Component {
@@ -17,5 +18,11 @@ class BaseButton extends React.Component {
     }
 
 }
+
+BaseButton.PropTypes = {
+    buttonType: PropTypes.string.isRequired,
+    buttonText: PropTypes.string.isRequired,
+    btnAction: PropTypes.func,
+  }
 
 export default BaseButton;

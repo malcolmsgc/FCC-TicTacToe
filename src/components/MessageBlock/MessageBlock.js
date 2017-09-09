@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './messageblock.css';
 
 class MessageBlock extends React.Component {
