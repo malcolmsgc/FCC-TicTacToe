@@ -9,11 +9,13 @@ class EnterName extends React.Component {
     
     
     render() {
+        const player = this.props.match.params.player;
+        const showBlock = player === '1' ? false : true;
         return (
             <div className="EnterName">
-                <ShareLinkBlock player2Link="http://www.cnjcbeiucdcvde.cdnscibu.cndochudoaheo#jcido" showBlock={true} />
-                <MessageBlock messageText={`Player ${this.props.playerNum}, enter your name!`} />
-                <EnterNameForm playerNum={this.props.playerNum} />
+                <ShareLinkBlock player2Link="http://www.cnjcbeiucdcvde.cdnscibu.cndochudoaheo#jcido" showBlock={showBlock} />
+                <MessageBlock messageText={`Player ${player}, enter your name!`} />
+                <EnterNameForm playerNum={player} history={this.props.history}/>
             </div>
         )
     }

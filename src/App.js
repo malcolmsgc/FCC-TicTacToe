@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Route, Link, Switch } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import Header from './components/Header/Header.js';
 import NumPlayers from './screens/NumPlayers.js';
 import EnterName from './screens/EnterName/EnterName.js';
@@ -37,7 +36,7 @@ class App extends React.Component {
         <BrowserRouter>
           <Switch>
             <Route exact path="/" component={NumPlayers} />
-            <Route path="/names" render={ () => <EnterName playerNum={1}/> } />
+            <Route path="/name/:player" render={ ({match, history}) => <EnterName match={match} history={history}/> } />
             <Route component ={notFound} />
           </Switch>
         </BrowserRouter>
@@ -46,8 +45,7 @@ class App extends React.Component {
   }
 }
 
-App.contextTypes = {
-  router: PropTypes.object
-}
 
 export default App;
+
+//(Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase()
