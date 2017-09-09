@@ -7,6 +7,28 @@ import notFound from './screens/notFound.js';
 import './app.css';
 
 class App extends React.Component {
+
+  constructor() {
+    super();
+    this.state = {
+      player1: {
+        name: '',
+        useX: undefined, //boolean
+        won: 0,
+        lost: 0,
+      },
+      player2: {
+        name: '',
+        useX: undefined, //boolean
+        won: 0,
+        lost: 0,
+        playerIsComputer: false;
+      },
+      gamesPlayed: 0,
+      player2Link: ''
+    }
+  }
+
   render() {
     return (
       <div className="App">
