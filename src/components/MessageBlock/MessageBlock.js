@@ -12,4 +12,8 @@ class MessageBlock extends React.Component {
 
 }
 
+MessageBlock.PropTypes = {
+    messageText: PropTypes.string.isRequired
+}
+
 export default MessageBlock;

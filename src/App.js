@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Link, Switch } from 'react-router-dom';
 import Header from './components/Header/Header.js';
 import NumPlayers from './screens/NumPlayers.js';
 import EnterName from './screens/EnterName/EnterName.js';
+import XorO from './screens/XorO/XorO.js';
 import notFound from './screens/notFound.js';
 import './app.css';
 
@@ -12,8 +13,8 @@ class App extends React.Component {
     super();
     this.state = {
       player1: {
-        name: '',
-        useX: undefined, //boolean
+        name: 'Fred',
+        useX: true, //boolean
         won: 0,
         lost: 0,
       },
@@ -37,6 +38,7 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" component={NumPlayers} />
             <Route path="/name/:player" render={ ({match, history}) => <EnterName match={match} history={history}/> } />
+            <Route exact path="/xo" render={ () => <XorO playername={this.state.player1.name} p1useX={this.state.player1.useX}/>} />
             <Route component ={notFound} />
           </Switch>
         </BrowserRouter>
