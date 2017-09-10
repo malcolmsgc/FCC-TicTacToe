@@ -19,10 +19,14 @@ render() {
     return (
         <form className="x-or-o">
             <div className="xo-inputs">
-                <input type="radio" id="useX" name="useX" value="true" checked={this.props.p1useX===true} onChange={this.handleSelected}/>
-                <label for="useX">X</label>
-                <input type="radio" id="useO" name="useX" value="false" checked={this.props.p1useX!==true} onChange={this.handleSelected}/>
-                <label for="useO">O</label>
+                <label for="useX">
+                    <input type="radio" id="useX" name="useX" value="true" checked={this.props.p1useX===true} onChange={this.handleSelected}/>
+                <span>X</span>
+                </label>
+                <label for="useO">
+                    <input type="radio" id="useO" name="useX" value="false" checked={this.props.p1useX===false} onChange={this.handleSelected}/>
+                    <span>O</span>
+                </label>
             </div>
             <BaseButton buttonType="submit" buttonText="Continue"/>
         </form>

@@ -15,13 +15,13 @@ class App extends React.Component {
     this.state = {
       player1: {
         name: 'Fred',
-        useX: true, //boolean
+        useX: null, //boolean
         won: 0,
         lost: 0,
       },
       player2: {
         name: '',
-        useX: undefined, //boolean
+        useX: null, //boolean
         won: 0,
         lost: 0,
         playerIsComputer: false

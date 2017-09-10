@@ -2,7 +2,7 @@
 
 input[type="radio"] {
     display: none;
-    &+ label {
+    &+ span {
         display: inline-block;
         font-family: $font-stack2;
         color: $color-base-button;
@@ -14,7 +14,7 @@ input[type="radio"] {
         padding: 0.1em;
         margin: 0 0.1em;
     }
-    &:checked + label {
+    &:checked + span {
         color: #F2C94C;
         border: 1px solid #F2C94C;
         background: #0C0C56;
