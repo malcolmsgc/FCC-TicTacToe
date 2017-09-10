@@ -11,7 +11,7 @@ class XorO extends React.Component {
         return (
             <div>
                 <MessageBlock messageText={`Hi ${this.props.playername}, Choose your weapon!`} />
-                <SelectWeaponForm p1useX={this.props.p1useX}/>
+                <SelectWeaponForm p1useX={this.props.p1useX} selectXO={this.props.selectXO}/>
                 <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => {alert('back') } }/>
             </div>
         )
@@ -20,7 +20,8 @@ class XorO extends React.Component {
 }
 
 XorO.PropTypes = {
-    playername: PropTypes.bool.isRequired
+    playername: PropTypes.bool.isRequired,
+    selectXO: PropTypes.func.isRequired,
   }
 
   export default XorO;

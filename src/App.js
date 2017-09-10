@@ -11,6 +11,7 @@ class App extends React.Component {
 
   constructor() {
     super();
+    this.selectXO = this.selectXO.bind(this);
     this.state = {
       player1: {
         name: 'Fred',
@@ -30,6 +31,13 @@ class App extends React.Component {
     }
   }
 
+  selectXO(p1useX) {
+    const state = {...this.state};
+    state.player1.useX = p1useX;
+    state.player2.useX = !p1useX;
+    this.setState({ player1: state.player1, player2: state.player2 });
+}
+
   render() {
     return (
       <div className="App">
@@ -38,7 +46,10 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" component={NumPlayers} />
             <Route path="/name/:player" render={ ({match, history}) => <EnterName match={match} history={history}/> } />
-            <Route exact path="/xo" render={ () => <XorO playername={this.state.player1.name} p1useX={this.state.player1.useX}/>} />
+            <Route exact path="/xo" render={ () => <XorO  playername={this.state.player1.name} 
+                                                          p1useX={this.state.player1.useX}
+                                                          selectXO={this.selectXO}/> } 
+                                                          />
             <Route component ={notFound} />
           </Switch>
         </BrowserRouter>
