@@ -1,0 +1,22 @@
+@import '../../vars.scss';
+
+input[type="radio"] {
+    display: none;
+    &+ label {
+        display: inline-block;
+        font-family: $font-stack2;
+        color: $color-base-button;
+        background: #E0E0E0;
+        border: 1px solid #828282;
+        min-height: 1em;
+        min-width: 1em;
+        font-size: 8em;
+        padding: 0.1em;
+        margin: 0 0.1em;
+    }
+    &:checked + label {
+        color: #F2C94C;
+        border: 1px solid #F2C94C;
+        background: #0C0C56;
+    }
+}
