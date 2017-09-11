@@ -1,0 +1,21 @@
+@import '../../vars.scss';
+
+
+.stats-bar {
+    display: inline-block;
+    min-width: 85vw;
+}
+
+span {
+    display: inline-block;
+    &.p1wins {
+        background: $color-player1
+    }
+    &.p2wins {
+        background: $color-player2
+    }
+    &.draws {
+        background: $color-draws
+    }
+    color: white;
+}

@@ -5,6 +5,7 @@ import NumPlayers from './screens/NumPlayers.js';
 import EnterName from './screens/EnterName/EnterName.js';
 import XorO from './screens/XorO/XorO.js';
 import notFound from './screens/notFound.js';
+import Game from './screens/Game/Game.js';
 import './app.css';
 
 class App extends React.Component {
@@ -46,11 +47,17 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" component={NumPlayers} />
             <Route path="/name/:player" render={ ({match, history}) => <EnterName match={match} history={history}/> } />
-            <Route exact path="/xo" render={ () => <XorO  playername={this.state.player1.name} 
+            <Route exact path="/xo" render={ () => <XorO  player1name={this.state.player1.name} 
                                                           p1useX={this.state.player1.useX}
-                                                          selectXO={this.selectXO}/> } 
-                                                          />
-            <Route component ={notFound} />
+                                                          selectXO={this.selectXO}
+                                                    /> } 
+                                              />
+            <Route path="/gameon" render={ () => <Game  player1={this.state.player1}
+                                                        player2={this.state.player2} 
+                                                        gamesPlayed={this.state.gamesPlayed} 
+                                                /> }
+                                          />
+            <Route component={notFound} />
           </Switch>
         </BrowserRouter>
       </div>

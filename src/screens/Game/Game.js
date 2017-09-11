@@ -1,19 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './game.css';
+import StatsBar from '../../components/StatsBar/StatsBar.js';
+import MessageBlock from '../../components/MessageBlock/MessageBlock.js';
+import ScoreBoard from '../../components/ScoreBoard/ScoreBoard.js';
+import GameBoard from '../../components/GameBoard/GameBoard.js';
+// import './game.css';
 
 class Game extends React.Component {
 
 render() {
-    <div className="stats-bar">
-        <span className="p1wins">{}</span>
-        <span className="draws">{}</span> 
-        <span className="p2wins">{}</span>
-    </div>
+    return (
+        <div>
+            <ScoreBoard p1name={this.props.player1.name}
+                        p2name={this.props.player2.name}
+                        p1wins={this.props.player1.won}
+                        p2wins={this.props.player2.won} />
+            <StatsBar   player1={this.props.player1}
+                        player2={this.props.player2}
+                        gamesPlayed={this.props.gamesPlayed} />
+            <MessageBlock messageText="lorem ipsum" />
+            <GameBoard />
+        
+        </div>
+    );
 }
 
 }
 
-Game.PropTypes = {}
+Game.PropTypes = {
+    player1: PropTypes.object.isRequired,
+    player2: PropTypes.object.isRequired,
+    gamesPlayed: PropTypes.number.isRequired,
+}
 
-default export Game;
+export default Game;
