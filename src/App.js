@@ -14,7 +14,7 @@ class App extends React.Component {
     this.selectXO = this.selectXO.bind(this);
     this.state = {
       player1: {
-        name: 'Fred',
+        name: '',
         useX: null, //boolean
         won: 0,
         lost: 0,
