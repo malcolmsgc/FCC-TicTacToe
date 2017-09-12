@@ -8,14 +8,27 @@
 
 span {
     display: inline-block;
+    box-sizing: border-box;
+    min-height: 2em;
     &.p1wins {
-        background: $color-player1
+        --p1wins: 0%;
+        background: $color-player1;
+        border: 0;
+        width: var(--p1wins);
     }
     &.p2wins {
-        background: $color-player2
+        --p2wins: 0%;
+        border: 1px solid greenyellow;
+        background: $color-player2;
+        border: 0;
+        width: var(--p2wins);
     }
     &.draws {
-        background: $color-draws
+        --draws: 100%;
+        border: 1px solid greenyellow;
+        background: $color-draws;
+        border: 0;
+        width: var(--draws);
     }
     color: white;
 }
