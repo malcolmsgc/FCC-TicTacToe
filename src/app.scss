@@ -7,4 +7,8 @@
     background-color: $color-background;
     min-height: 100vh;
     text-align: center;
+    .app-wrapper {
+        width: 85vw;
+        max-width: 768px;
+    }
 }

@@ -42,24 +42,26 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <Header />
-        <BrowserRouter>
-          <Switch>
-            <Route exact path="/" component={NumPlayers} />
-            <Route path="/name/:player" render={ ({match, history}) => <EnterName match={match} history={history}/> } />
-            <Route exact path="/xo" render={ () => <XorO  player1name={this.state.player1.name} 
-                                                          p1useX={this.state.player1.useX}
-                                                          selectXO={this.selectXO}
-                                                    /> } 
-                                              />
-            <Route path="/gameon" render={ () => <Game  player1={this.state.player1}
-                                                        player2={this.state.player2} 
-                                                        gamesPlayed={this.state.gamesPlayed} 
-                                                /> }
-                                          />
-            <Route component={notFound} />
-          </Switch>
-        </BrowserRouter>
+          <Header />
+          <div className="app-wrapper">
+          <BrowserRouter>
+            <Switch>
+              <Route exact path="/" component={NumPlayers} />
+              <Route path="/name/:player" render={ ({match, history}) => <EnterName match={match} history={history}/> } />
+              <Route exact path="/xo" render={ () => <XorO  player1name={this.state.player1.name} 
+                                                            p1useX={this.state.player1.useX}
+                                                            selectXO={this.selectXO}
+                                                      /> } 
+                                                />
+              <Route path="/gameon" render={ () => <Game  player1={this.state.player1}
+                                                          player2={this.state.player2} 
+                                                          gamesPlayed={this.state.gamesPlayed} 
+                                                  /> }
+                                            />
+              <Route component={notFound} />
+            </Switch>
+          </BrowserRouter>
+        </div>
       </div>
     );
   }

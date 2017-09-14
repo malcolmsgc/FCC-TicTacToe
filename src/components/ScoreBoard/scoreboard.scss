@@ -1,3 +1,48 @@
+@import '../../vars.scss';
+
 .scoreboard {
     color: white;
+    width: 85%;
+    border: 0;
+    display: inline-flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+    //remove margin auto when structure finished
+    margin: 0 auto;
+    #p1sboard, #p2sboard {
+        display: inline-flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 5em;
+        box-sizing: border-box;
+        flex: 1;
+    }
+    .player-name {
+        font-family: $font-stack1;
+        color: $color-yellow;
+        flex: 10 0 auto;
+    }
+    .player-score {
+        font-family: $font-stack2;
+        font-size: 2.5em;
+        color: #000;
+        // line-height: 2em;
+        border: 0.25px solid #000;
+        background: $light-grey;
+        min-width: 1.2em;
+        min-height: 1.2em;
+        margin: 0 0.25em;
+        flex: 1 0 auto;
+    }
+    #p1sboard {
+        border: 1px solid $color-player1;
+        background: $color-player1;
+    }
+    #p2sboard {
+        border: 1px solid $color-player2;
+        background: $color-player2;
+    }
+ 
 }
