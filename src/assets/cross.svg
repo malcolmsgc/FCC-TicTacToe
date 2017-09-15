@@ -1,0 +1,17 @@
+<svg width="58" height="74" viewBox="0 0 58 74" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<title>Cross</title>
+<g id="Canvas" transform="translate(-795 -164)">
+    <g class="Cross">
+            <g class="Line1">
+                <use xlink:href="#path0_fill" transform="matrix(0.576683 0.816968 -0.816968 0.576683 803.536 164.387)"/>
+            </g>
+            <g class="Line2">
+                <use xlink:href="#path1_fill" transform="matrix(-0.594391 0.804176 -0.804176 -0.594391 852.433 168.755)"/>
+            </g>
+    </g>
+</g>
+<defs>
+<path id="path0_fill" d="M 4 0C 1.79086 0 0 1.79086 0 4C 0 6.20914 1.79086 8 4 8L 4 0ZM 79.2346 8C 81.4437 8 83.2346 6.20914 83.2346 4C 83.2346 1.79086 81.4437 0 79.2346 0L 79.2346 8ZM 4 8L 79.2346 8L 79.2346 0L 4 0L 4 8Z"/>
+<path id="path1_fill" d="M 4 0C 1.79086 0 0 1.79086 0 4C 0 6.20914 1.79086 8 4 8L 4 0ZM 81.8021 8C 84.0112 8 85.8021 6.20914 85.8021 4C 85.8021 1.79086 84.0112 0 81.8021 0L 81.8021 8ZM 4 8L 81.8021 8L 81.8021 0L 4 0L 4 8Z"/>
+</defs>
+</svg>

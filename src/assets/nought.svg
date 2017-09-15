@@ -1,0 +1,23 @@
+<svg width="67" height="73" viewBox="0 0 67 73" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<title>Nought</title>
+<g id="Canvas" transform="translate(-691 -164)">
+        <g class="nought">
+            <mask id="mask0_alpha" mask-type="alpha">
+            <g id="mask0 outline ins">
+                <g id="Vector">
+                <use xlink:href="#path0_fill" transform="translate(691 164)" fill="#FFFFFF"/>
+                </g>
+            </g>
+            </mask>
+            <g id="Group" mask="url(#mask0_alpha)">
+                <g id="Vector">
+                <use xlink:href="#path1_fill" transform="translate(683 156)"/>
+                </g>
+            </g>
+        </g>
+</g>
+<defs>
+<path id="path0_fill" d="M 67 36.5C 67 56.6584 52.0015 73 33.5 73C 14.9985 73 0 56.6584 0 36.5C 0 16.3416 14.9985 0 33.5 0C 52.0015 0 67 16.3416 67 36.5Z"/>
+<path id="path1_fill" d="M 67 44.5C 67 60.8999 54.9512 73 41.5 73L 41.5 89C 65.0519 89 83 68.4169 83 44.5L 67 44.5ZM 41.5 73C 28.0488 73 16 60.8999 16 44.5L 0 44.5C 0 68.4169 17.9481 89 41.5 89L 41.5 73ZM 16 44.5C 16 28.1001 28.0488 16 41.5 16L 41.5 0C 17.9481 0 0 20.5831 0 44.5L 16 44.5ZM 41.5 16C 54.9512 16 67 28.1001 67 44.5L 83 44.5C 83 20.5831 65.0519 0 41.5 0L 41.5 16Z"/>
+</defs>
+</svg>
