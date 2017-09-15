@@ -13,12 +13,15 @@ class App extends React.Component {
   constructor() {
     super();
     this.selectXO = this.selectXO.bind(this);
+    this.setBoard = this.setBoard.bind(this);
+    this.fillCell = this.fillCell.bind(this);
     this.state = {
       player1: {
         name: '',
         useX: null, //boolean
         won: 0,
         lost: 0,
+        turnToGo: true // TO DO set this randomly and alternate each game
       },
       player2: {
         name: '',
@@ -28,16 +31,56 @@ class App extends React.Component {
         playerIsComputer: false
       },
       gamesPlayed: 0,
-      player2Link: ''
+      player2Link: '',
+      // state for cells in gameboard
+      board: {}
     }
   }
 
+  /* --------- */
+  /* APP LOGIC */
+  /* --------- */
+  
   selectXO(p1useX) {
     const state = {...this.state};
     state.player1.useX = p1useX;
     state.player2.useX = !p1useX;
     this.setState({ player1: state.player1, player2: state.player2 });
-}
+  }
+  
+  setBoard() {
+    const freshBoard = {};
+    for (let i=1; i <= 9; i++) {
+      freshBoard[i] = null;
+    }
+    this.setState( { board: freshBoard });
+    console.log('board reset');
+    return this.state.board;
+  }
+
+  fillCell(cell) {
+    const player1 = {...this.state.player1}
+    const board = {...this.state.board}
+    const symbol = player1.turnToGo ? ( player1.useX ? "X" : "O" ) : 
+                                      ( player1.useX ? "O" : "X" );
+    board[cell] = symbol;
+    player1.turnToGo = !player1.turnToGo;
+    this.setState( { player1, board } );
+  }
+  
+  /* ---------- */
+  /* GAME LOGIC */
+  /* ---------- */
+  
+
+  /* ----------------- */
+  /* LIFECYCLE METHODS */
+  /* ----------------- */
+
+  componentWillMount() {
+    this.setBoard();
+   }
+
 
   render() {
     return (
@@ -55,7 +98,9 @@ class App extends React.Component {
                                                 />
               <Route path="/gameon" render={ () => <Game  player1={this.state.player1}
                                                           player2={this.state.player2} 
-                                                          gamesPlayed={this.state.gamesPlayed} 
+                                                          gamesPlayed={this.state.gamesPlayed}
+                                                          board={this.state.board}
+                                                          fillCell={this.fillCell}
                                                   /> }
                                             />
               <Route component={notFound} />

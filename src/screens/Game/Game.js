@@ -18,19 +18,22 @@ render() {
             <StatsBar   player1={this.props.player1}
                         player2={this.props.player2}
                         gamesPlayed={this.props.gamesPlayed} />
-            <MessageBlock messageText="lorem ipsum" />
-            <GameBoard />
+            <MessageBlock messageText="TO DO: Make this dynamic" />
+            <GameBoard board={this.props.board}/>
         
         </div>
     );
 }
+
 
 }
 
 Game.PropTypes = {
     player1: PropTypes.object.isRequired,
     player2: PropTypes.object.isRequired,
+    board: PropTypes.object.isRequired,
     gamesPlayed: PropTypes.number.isRequired,
+    fillCell: PropTypes.func.isRequired,
 }
 
 export default Game;
