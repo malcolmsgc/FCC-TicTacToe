@@ -29,7 +29,7 @@ class GameBoard extends React.Component {
             <div className="gameboard">
             {
                 Object.keys(byRow).map( (key) =>
-                    <BoardRow key={key} cells={byRow[key]} />    
+                    <BoardRow key={key} cells={byRow[key]} board={this.props.board}/>    
                 )
             }
             </div>
@@ -52,7 +52,7 @@ class BoardRow extends React.Component {
             <div className="game-row">
                 {
                     this.props.cells.map( key =>
-                        <GameCell key={key} cellContents={key}/> )
+                        <GameCell key={key} cellContents={this.props.board[key]}/> )
                 }
             </div>
         );
