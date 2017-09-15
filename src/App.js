@@ -59,6 +59,15 @@ class App extends React.Component {
   }
 
   fillCell(cell) {
+    if (cell < 1 || cell > 9 ) {
+      const err = new Error(`Cell ${cell} does not exist`);
+      console.error(err);
+      return;
+    }
+    if (this.state.board[cell]) {
+      console.warn(`cell already has value ${this.state.board[cell]}`);
+      return;
+    }
     const player1 = {...this.state.player1}
     const board = {...this.state.board}
     const symbol = player1.turnToGo ? ( player1.useX ? "X" : "O" ) : 
