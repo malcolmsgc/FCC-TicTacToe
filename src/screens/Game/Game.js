@@ -19,7 +19,7 @@ render() {
                         player2={this.props.player2}
                         gamesPlayed={this.props.gamesPlayed} />
             <MessageBlock messageText="TO DO: Make this dynamic" />
-            <GameBoard board={this.props.board}/>
+            <GameBoard board={this.props.board} fillCell={this.props.fillCell}/>
         
         </div>
     );
