@@ -17,6 +17,7 @@ class App extends React.Component {
     this.fillCell = this.fillCell.bind(this);
     this.isTwoPlayer = this.isTwoPlayer.bind(this);
     this.createGameLink = this.createGameLink.bind(this);
+    this.addName = this.addName.bind(this);
     this.state = {
       player1: {
         name: 'Player 1',
@@ -59,6 +60,12 @@ class App extends React.Component {
     // update router with link
     // use hash as id for game on firebase
     this.setState({ player2 });
+  }
+
+  addName({playerNum, playerName} = {}) {
+    const playerState = {...this.state[`player${playerNum}`]};
+    playerState.name = playerName;
+    this.setState({ [`player${playerNum}`]: playerState });
   }
 
   /* Create unique game link */
@@ -134,7 +141,7 @@ class App extends React.Component {
               <Route exact path="/" render={ () => <NumPlayers isTwoPlayer={this.isTwoPlayer} />} />
               <Route path="/name/:player" render={ ({match, history}) => <EnterName match={match} 
                                                                                     history={history}
-                                                                                    p2IsComp={this.state.player2.playerIsComputer}
+                                                                                    addName={this.addName}
                                                                                     /> 
                                                   } />
               <Route exact path="/xo" render={ ({match, history}) => <XorO  match={match} 

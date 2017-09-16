@@ -17,13 +17,13 @@ handleSelected(changeEvent) {
 
 render() {
     return (
-        <form className="x-or-o">
+        <form className="x-or-o" onSubmit={ (e) => {e.preventDefault() }}>
             <div className="xo-inputs">
-                <label for="useX">
+                <label> {/*for="useX"*/}
                     <input type="radio" id="useX" name="useX" value="true" checked={this.props.p1useX===true} onChange={this.handleSelected}/>
                 <span>X</span>
                 </label>
-                <label for="useO">
+                <label> {/*for="useO"*/}
                     <input type="radio" id="useO" name="useX" value="false" checked={this.props.p1useX===false} onChange={this.handleSelected}/>
                     <span>O</span>
                 </label>

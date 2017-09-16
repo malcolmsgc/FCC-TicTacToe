@@ -10,10 +10,12 @@ class EnterNameForm extends React.Component {
         let next = "/";
         e.preventDefault(); 
         // add player name to state
+        // takes player number and player name as args
+        this.props.addName({playerNum: this.props.playerNum, playerName: this.playerNameInput.value});
         console.log(`User entered ${this.playerNameInput.value}`);
         // navigate to next step
         //      if player 1
-        if (this.props.playerNum == '1') {
+        if (this.props.playerNum === '1') {
             next = "/xo";
         }
         //      if player 2 
@@ -39,6 +41,7 @@ class EnterNameForm extends React.Component {
 
 EnterNameForm.PropTypes = {
     playerNum: PropTypes.string.isRequired,
+    addName: PropTypes.func.isRequired,
   }
 
 export default EnterNameForm;
