@@ -47,24 +47,24 @@ class App extends React.Component {
   /* also sets computer's player details if single player game */
   /* argument is boolean that relates to if 2 player game (true) or one (false) */
   isTwoPlayer(twoPlayer) {
-    const state = {...this.state};
+    const player2 = {...this.state.player2};
     // set p2's playerIsComputer boolean
-    state.player2.playerIsComputer = !twoPlayer;
+    player2.playerIsComputer = !twoPlayer;
     // if single player game set computer details for player 2
-    state.player2.name = 'Robo';
+    player2.name = 'Robo';
 
     // if 2 player generate unique game link
     this.createGameLink();
     // update state with link
     // update router with link
     // use hash as id for game on firebase
-    this.setState({ state });
+    this.setState({ player2 });
   }
 
   /* Create unique game link */
-  /* uses date string plus suffix of random string of numbers */
+  /* uses date string converted to base 36 plus suffix of random base 16 numbers */
   createGameLink() {
-    const unique = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
+    const unique = (Date.now().toString(36) + (Math.random() * 10).toString(16).substr(2, 4));
     console.log(unique);
   }
 
