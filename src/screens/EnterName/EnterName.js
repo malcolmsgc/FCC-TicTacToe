@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import MessageBlock from '../../components/MessageBlock/MessageBlock.js';
+import BaseButton from '../../components/BaseButton/BaseButton.js';
 import ShareLinkBlock from '../../components/ShareLinkBlock/ShareLinkBlock.js';
 import EnterNameForm from '../../components/EnterNameForm/EnterNameForm.js';
 import './entername.css';
@@ -18,6 +19,7 @@ class EnterName extends React.Component {
                                 history={this.props.history}
                                 addName={this.props.addName}
                                 />
+                <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => { this.props.history.goBack() } }/>
             </div>
         )
     }
