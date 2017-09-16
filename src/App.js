@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Link, Switch } from 'react-router-dom';
 import Header from './components/Header/Header.js';
-import NumPlayers from './screens/NumPlayers.js';
+import NumPlayers from './screens/NumPlayers/NumPlayers.js';
 import EnterName from './screens/EnterName/EnterName.js';
 import XorO from './screens/XorO/XorO.js';
 import notFound from './screens/notFound.js';
@@ -15,16 +15,18 @@ class App extends React.Component {
     this.selectXO = this.selectXO.bind(this);
     this.setBoard = this.setBoard.bind(this);
     this.fillCell = this.fillCell.bind(this);
+    this.isTwoPlayer = this.isTwoPlayer.bind(this);
+    this.createGameLink = this.createGameLink.bind(this);
     this.state = {
       player1: {
-        name: '',
+        name: 'Player 1',
         useX: null, //boolean
         won: 0,
         lost: 0,
         turnToGo: true // TO DO set this randomly and alternate each game
       },
       player2: {
-        name: '',
+        name: 'Player 2',
         useX: null, //boolean
         won: 0,
         lost: 0,
@@ -40,7 +42,34 @@ class App extends React.Component {
   /* --------- */
   /* APP LOGIC */
   /* --------- */
-  
+
+  /* update state to reflect if 1 or 2 player game */
+  /* also sets computer's player details if single player game */
+  /* argument is boolean that relates to if 2 player game (true) or one (false) */
+  isTwoPlayer(twoPlayer) {
+    const state = {...this.state};
+    // set p2's playerIsComputer boolean
+    state.player2.playerIsComputer = !twoPlayer;
+    // if single player game set computer details for player 2
+    state.player2.name = 'Robo';
+
+    // if 2 player generate unique game link
+    this.createGameLink();
+    // update state with link
+    // update router with link
+    // use hash as id for game on firebase
+    this.setState({ state });
+  }
+
+  /* Create unique game link */
+  /* uses date string plus suffix of random string of numbers */
+  createGameLink() {
+    const unique = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
+    console.log(unique);
+  }
+
+  /* Sets player X or O symbols based on single player choosing a symbol */
+  /* argument is boolean that relates to if player one chose X */
   selectXO(p1useX) {
     const state = {...this.state};
     state.player1.useX = p1useX;
@@ -48,6 +77,8 @@ class App extends React.Component {
     this.setState({ player1: state.player1, player2: state.player2 });
   }
   
+  /* set or reset board */
+  /* called before mounting app and after each game */
   setBoard() {
     const freshBoard = {};
     for (let i=1; i <= 9; i++) {
@@ -58,6 +89,8 @@ class App extends React.Component {
     return this.state.board;
   }
 
+  /* changes state for board to update game cell */
+  /* used in game cell to show correct symbol as svg or state value as alt attribute */
   fillCell(cell) {
     if (cell < 1 || cell > 9 ) {
       const err = new Error(`Cell ${cell} does not exist`);
@@ -98,7 +131,7 @@ class App extends React.Component {
           <div className="app-wrapper">
           <BrowserRouter>
             <Switch>
-              <Route exact path="/" component={NumPlayers} />
+              <Route exact path="/" render={ () => <NumPlayers isTwoPlayer={this.isTwoPlayer} />} />
               <Route path="/name/:player" render={ ({match, history}) => <EnterName match={match} history={history}/> } />
               <Route exact path="/xo" render={ () => <XorO  player1name={this.state.player1.name} 
                                                             p1useX={this.state.player1.useX}
@@ -124,4 +157,4 @@ class App extends React.Component {
 
 export default App;
 
-//(Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase()
+
