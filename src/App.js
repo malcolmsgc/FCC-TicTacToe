@@ -132,10 +132,16 @@ class App extends React.Component {
           <BrowserRouter>
             <Switch>
               <Route exact path="/" render={ () => <NumPlayers isTwoPlayer={this.isTwoPlayer} />} />
-              <Route path="/name/:player" render={ ({match, history}) => <EnterName match={match} history={history}/> } />
-              <Route exact path="/xo" render={ () => <XorO  player1name={this.state.player1.name} 
-                                                            p1useX={this.state.player1.useX}
-                                                            selectXO={this.selectXO}
+              <Route path="/name/:player" render={ ({match, history}) => <EnterName match={match} 
+                                                                                    history={history}
+                                                                                    p2IsComp={this.state.player2.playerIsComputer}
+                                                                                    /> 
+                                                  } />
+              <Route exact path="/xo" render={ ({match, history}) => <XorO  match={match} 
+                                                                            history={history}
+                                                                            player1name={this.state.player1.name} 
+                                                                            p1useX={this.state.player1.useX}
+                                                                            selectXO={this.selectXO}
                                                       /> } 
                                                 />
               <Route path="/gameon" render={ () => <Game  player1={this.state.player1}

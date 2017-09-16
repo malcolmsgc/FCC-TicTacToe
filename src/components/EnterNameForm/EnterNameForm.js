@@ -7,15 +7,19 @@ import './enternameform.css';
 class EnterNameForm extends React.Component {
 
     getName(e) {
-        let next = "/where-we-going?hi";
+        let next = "/";
         e.preventDefault(); 
         // add player name to state
         console.log(`User entered ${this.playerNameInput.value}`);
         // navigate to next step
-        //  if single player
-        //  if two player
         //      if player 1
+        if (this.props.playerNum == '1') {
+            next = "/xo";
+        }
         //      if player 2 
+        else {
+            next = "/name/2";
+        }
         this.props.history.push(next);
     }
     
@@ -34,7 +38,7 @@ class EnterNameForm extends React.Component {
 }
 
 EnterNameForm.PropTypes = {
-    playerNum: PropTypes.string.isRequired
+    playerNum: PropTypes.string.isRequired,
   }
 
 export default EnterNameForm;

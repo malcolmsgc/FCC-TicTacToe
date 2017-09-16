@@ -14,7 +14,9 @@ class EnterName extends React.Component {
             <div className="EnterName">
                 <ShareLinkBlock player2Link="http://www.cnjcbeiucdcvde.cdnscibu.cndochudoaheo#jcido" showBlock={showBlock} />
                 <MessageBlock messageText={`Player ${player}, enter your name!`} />
-                <EnterNameForm playerNum={player} history={this.props.history}/>
+                <EnterNameForm  playerNum={player}
+                                history={this.props.history} 
+                                />
             </div>
         )
     }
@@ -22,7 +24,7 @@ class EnterName extends React.Component {
 }
        
 EnterName.PropTypes = {
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired,
   }
 
 export default EnterName;

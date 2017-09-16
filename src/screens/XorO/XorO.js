@@ -12,7 +12,7 @@ class XorO extends React.Component {
             <div>
                 <MessageBlock messageText={`Hi ${this.props.player1name}, Choose your weapon!`} />
                 <SelectWeaponForm p1useX={this.props.p1useX} selectXO={this.props.selectXO}/>
-                <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => {alert('back') } }/>
+                <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => { this.props.history.goBack() } }/>
             </div>
         )
     }
