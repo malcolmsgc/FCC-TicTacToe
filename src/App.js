@@ -24,7 +24,7 @@ class App extends React.Component {
         useX: null, //boolean
         won: 0,
         lost: 0,
-        turnToGo: true // TO DO set this randomly and alternate each game
+        turnToGo: null
       },
       player2: {
         name: 'Player 2',
@@ -151,11 +151,13 @@ class App extends React.Component {
                                                                             selectXO={this.selectXO}
                                                       /> } 
                                                 />
-              <Route path="/gameon" render={ () => <Game  player1={this.state.player1}
-                                                          player2={this.state.player2} 
-                                                          gamesPlayed={this.state.gamesPlayed}
-                                                          board={this.state.board}
-                                                          fillCell={this.fillCell}
+              <Route path="/gameon" render={ ({match, history}) => <Game  player1={this.state.player1}
+                                                                          player2={this.state.player2} 
+                                                                          gamesPlayed={this.state.gamesPlayed}
+                                                                          board={this.state.board}
+                                                                          fillCell={this.fillCell}
+                                                                          match={match} 
+                                                                          history={history}
                                                   /> }
                                             />
               <Route component={notFound} />
