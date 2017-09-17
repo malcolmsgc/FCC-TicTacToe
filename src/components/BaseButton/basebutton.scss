@@ -12,4 +12,7 @@ button, .btn {
     color: $color-yellow;
     text-transform: uppercase;
     letter-spacing: 0.1em;
+    &:active, &:hover {
+        border: 1px solid #F2F2F2;
+    }
 }

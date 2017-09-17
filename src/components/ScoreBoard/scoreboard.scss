@@ -1,13 +1,13 @@
 @import '../../vars.scss';
 
 .scoreboard {
-    color: white;
     width: 85%;
     border: 0;
     display: inline-flex;
     flex-flow: row wrap;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
+    min-height: 5em;
     //remove margin auto when structure finished
     margin: 0 auto;
     #p1sboard, #p2sboard {
@@ -15,14 +15,21 @@
         flex-flow: row nowrap;
         align-items: center;
         justify-content: space-between;
-        min-height: 5em;
         box-sizing: border-box;
         flex: 1;
     }
     .player-name {
         font-family: $font-stack1;
         color: $color-yellow;
-        flex: 10 0 auto;
+        flex: 10 1 auto;
+        text-align: left;
+        margin-left: 1em;
+        p {
+            font-family: inherit;
+            color: inherit;
+            hyphens: auto;
+            font-size: 1em;
+        }
     }
     .player-score {
         font-family: $font-stack2;
@@ -31,10 +38,11 @@
         // line-height: 2em;
         border: 0.25px solid #000;
         background: $light-grey;
-        min-width: 1.2em;
+        min-width: 2em;
         min-height: 1.2em;
+        padding: 0.05em;
         margin: 0 0.25em;
-        flex: 1 0 auto;
+        flex: 0 auto;
     }
     #p1sboard {
         border: 1px solid $color-player1;

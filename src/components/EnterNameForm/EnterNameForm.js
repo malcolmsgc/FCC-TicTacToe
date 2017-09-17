@@ -20,11 +20,13 @@ class EnterNameForm extends React.Component {
         }
         //      if player 2 
         else {
-            next = "/name/2";
+            next = "/gameon";
         }
         this.props.history.push(next);
     }
     
+
+
     render() {
         return (
             <form className="enter-name" onSubmit={(e) => {this.getName(e)} } >
@@ -32,7 +34,7 @@ class EnterNameForm extends React.Component {
                                     placeholder={`Player ${this.props.playerNum}'s name`} 
                                     defaultValue={`Player ${this.props.playerNum}`}
                                     ref={(input) => {this.playerNameInput = input;}} />
-                <BaseButton buttonType="submit" buttonText="Continue"/>
+                <BaseButton buttonType="submit" className={`p${this.props.playerNum}`} buttonText="Continue"/>
             </form>
         )
     }

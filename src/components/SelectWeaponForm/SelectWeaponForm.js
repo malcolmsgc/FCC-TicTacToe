@@ -36,7 +36,7 @@ render() {
                     <span>O</span>
                 </label>
             </div>
-            <BaseButton buttonType="submit" buttonText="Continue"/>
+            <BaseButton buttonType="submit" className="p1" buttonText="Continue"/>
         </form>
     )
 }

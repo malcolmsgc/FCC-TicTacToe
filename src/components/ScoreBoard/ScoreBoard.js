@@ -8,11 +8,11 @@ class ScoreBoard extends React.Component {
         return (
             <div className="scoreboard">
                 <div id="p1sboard">
-                    <div className="player-name">{this.props.p1name}</div>
+                    <div className="player-name"><p>{this.props.p1name}</p></div>
                     <div className="player-score">{this.props.p1wins}</div>
                 </div>
                 <div id="p2sboard">
-                    <div className="player-name">{this.props.p2name}</div>
+                    <div className="player-name"><p>{this.props.p2name}</p></div>
                     <div className="player-score">{this.props.p2wins}</div>
                 </div>
             </div>
