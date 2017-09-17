@@ -19,7 +19,9 @@ class EnterName extends React.Component {
                                 history={this.props.history}
                                 addName={this.props.addName}
                                 />
-                <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => { this.props.history.goBack() } }/>
+                <div>
+                    <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => { this.props.history.goBack() } }/>
+                </div>
             </div>
         )
     }

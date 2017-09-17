@@ -27,3 +27,18 @@ $font-stack2: Arial, "Helvetica Neue", Helvetica, sans-serif;
     max-height: 95vh;
 }
 
+@mixin player1 {
+    background: $color-player1;
+    &:active, &:hover {
+        border: 1px solid $color-yellow;
+    }
+}
+
+@mixin player2 {
+    background: $color-player2;
+    &:active, &:hover {
+        border: 1px solid $color-yellow;
+    }
+    
+}
+
