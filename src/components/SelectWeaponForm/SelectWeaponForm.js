@@ -7,7 +7,9 @@ class SelectWeaponForm extends React.Component {
 
     constructor(){
         super();
+        //the following are both called within lexical scope of class so bind not 100% nec. Added for more resilience.
         this.handleSelected = this.handleSelected.bind(this);
+        this.routeOnSubmit = this.routeOnSubmit.bind(this);
     }
 
 handleSelected(changeEvent) {
@@ -15,9 +17,15 @@ handleSelected(changeEvent) {
     this.props.selectXO(changeEvent.target.value === 'true');
 }
 
+routeOnSubmit(event) {
+    event.preventDefault();
+    if (this.props.p1useX !== true && this.props.p1useX !== false) return;
+    this.props.history.push("/name/2");
+}
+
 render() {
     return (
-        <form className="x-or-o" onSubmit={ (e) => {e.preventDefault() }}>
+        <form className="x-or-o" onSubmit={ (e) => { this.routeOnSubmit(e) }}>
             <div className="xo-inputs">
                 <label> {/*for="useX"*/}
                     <input type="radio" id="useX" name="useX" value="true" checked={this.props.p1useX===true} onChange={this.handleSelected}/>
@@ -37,6 +45,7 @@ render() {
 
 SelectWeaponForm.PropTypes = {
     p1useX: PropTypes.bool,
+    history: PropTypes.object.isRequired,
   }
 
   export default SelectWeaponForm;

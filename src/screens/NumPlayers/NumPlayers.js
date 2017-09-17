@@ -6,14 +6,6 @@ import { Link } from 'react-router-dom';
 import './numplayers.css';
 
 class NumPlayers extends React.Component {
-
-    singlePlayer() {
-
-    }
-
-    twoPlayer() {
-
-    }
     
     render() {
         return (
