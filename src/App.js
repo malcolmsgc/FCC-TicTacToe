@@ -13,7 +13,6 @@ class App extends React.Component {
   constructor() {
     super();
     this.selectXO = this.selectXO.bind(this);
-    this.fillCell = this.fillCell.bind(this);
     this.isTwoPlayer = this.isTwoPlayer.bind(this);
     this.createGameLink = this.createGameLink.bind(this);
     this.addName = this.addName.bind(this);
@@ -28,7 +27,6 @@ class App extends React.Component {
         playerIsComputer: false,
         remoteLink: '',
       },
-      gamesPlayed: 0,
     }
   }
 
@@ -77,12 +75,6 @@ class App extends React.Component {
   }
 
 
-
-  /* ---------- */
-  /* GAME LOGIC */
-  /* ---------- */
-
-
   /* ----------------- */
   /* LIFECYCLE METHODS */
   /* ----------------- */
@@ -111,9 +103,6 @@ class App extends React.Component {
                                                 />
               <Route path="/gameon" render={ ({match, history}) => <Game  player1={this.state.player1}
                                                                           player2={this.state.player2}
-                                                                          gamesPlayed={this.state.gamesPlayed}
-                                                                          board={this.state.board}
-                                                                          fillCell={this.fillCell}
                                                                           match={match}
                                                                           history={history}
                                                   /> }
