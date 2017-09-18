@@ -13,7 +13,6 @@ class App extends React.Component {
   constructor() {
     super();
     this.selectXO = this.selectXO.bind(this);
-    this.setBoard = this.setBoard.bind(this);
     this.fillCell = this.fillCell.bind(this);
     this.isTwoPlayer = this.isTwoPlayer.bind(this);
     this.createGameLink = this.createGameLink.bind(this);
@@ -22,21 +21,14 @@ class App extends React.Component {
       player1: {
         name: 'Player 1',
         useX: null, //boolean
-        won: 0,
-        lost: 0,
-        turnToGo: null
       },
       player2: {
         name: 'Player 2',
         useX: null, //boolean
-        won: 0,
-        lost: 0,
-        playerIsComputer: false
+        playerIsComputer: false,
+        remoteLink: '',
       },
       gamesPlayed: 0,
-      player2Link: '',
-      // state for cells in gameboard
-      board: {}
     }
   }
 
@@ -83,52 +75,18 @@ class App extends React.Component {
     state.player2.useX = !p1useX;
     this.setState({ player1: state.player1, player2: state.player2 });
   }
-  
-  /* set or reset board */
-  /* called before mounting app and after each game */
-  setBoard() {
-    const freshBoard = {};
-    for (let i=1; i <= 9; i++) {
-      freshBoard[i] = null;
-    }
-    this.setState( { board: freshBoard });
-    console.log('board reset');
-    return this.state.board;
-  }
 
-  /* changes state for board to update game cell */
-  /* used in game cell to show correct symbol as svg or state value as alt attribute */
-  fillCell(cell) {
-    if (cell < 1 || cell > 9 ) {
-      const err = new Error(`Cell ${cell} does not exist`);
-      console.error(err);
-      return;
-    }
-    if (this.state.board[cell]) {
-      console.warn(`cell already has value ${this.state.board[cell]}`);
-      return;
-    }
-    const player1 = {...this.state.player1}
-    const board = {...this.state.board}
-    const symbol = player1.turnToGo ? ( player1.useX ? "X" : "O" ) : 
-                                      ( player1.useX ? "O" : "X" );
-    board[cell] = symbol;
-    player1.turnToGo = !player1.turnToGo;
-    this.setState( { player1, board } );
-  }
-  
+
+
   /* ---------- */
   /* GAME LOGIC */
   /* ---------- */
-  
+
 
   /* ----------------- */
   /* LIFECYCLE METHODS */
   /* ----------------- */
 
-  componentWillMount() {
-    this.setBoard();
-   }
 
 
   render() {
@@ -139,24 +97,24 @@ class App extends React.Component {
           <BrowserRouter>
             <Switch>
               <Route exact path="/" render={ () => <NumPlayers isTwoPlayer={this.isTwoPlayer} />} />
-              <Route path="/name/:player" render={ ({match, history}) => <EnterName match={match} 
+              <Route path="/name/:player" render={ ({match, history}) => <EnterName match={match}
                                                                                     history={history}
                                                                                     addName={this.addName}
-                                                                                    /> 
+                                                                                    />
                                                   } />
-              <Route exact path="/xo" render={ ({match, history}) => <XorO  match={match} 
+              <Route exact path="/xo" render={ ({match, history}) => <XorO  match={match}
                                                                             history={history}
-                                                                            player1name={this.state.player1.name} 
+                                                                            player1name={this.state.player1.name}
                                                                             p1useX={this.state.player1.useX}
                                                                             selectXO={this.selectXO}
-                                                      /> } 
+                                                      /> }
                                                 />
               <Route path="/gameon" render={ ({match, history}) => <Game  player1={this.state.player1}
-                                                                          player2={this.state.player2} 
+                                                                          player2={this.state.player2}
                                                                           gamesPlayed={this.state.gamesPlayed}
                                                                           board={this.state.board}
                                                                           fillCell={this.fillCell}
-                                                                          match={match} 
+                                                                          match={match}
                                                                           history={history}
                                                   /> }
                                             />
