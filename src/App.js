@@ -108,6 +108,7 @@ class App extends React.Component {
                                                                             player1name={this.state.player1.name}
                                                                             p1useX={this.state.player1.useX}
                                                                             selectXO={this.selectXO}
+                                                                            twoPlayer={!this.state.player2.playerIsComputer}
                                                       /> }
                                                 />
               <Route path="/gameon" render={ ({match, history}) => <Game  player1={this.state.player1}

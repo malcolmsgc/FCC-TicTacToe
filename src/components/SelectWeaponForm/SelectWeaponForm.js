@@ -20,7 +20,8 @@ handleSelected(changeEvent) {
 routeOnSubmit(event) {
     event.preventDefault();
     if (this.props.p1useX !== true && this.props.p1useX !== false) return;
-    this.props.history.push("/name/2");
+    const route = this.props.twoPlayer ? "/name/2" : "/gameon";
+    this.props.history.push(route);
 }
 
 render() {
@@ -46,6 +47,7 @@ render() {
 SelectWeaponForm.PropTypes = {
     p1useX: PropTypes.bool,
     history: PropTypes.object.isRequired,
+    twoPlayer: PropTypes.bool.isRequired,
   }
 
   export default SelectWeaponForm;
