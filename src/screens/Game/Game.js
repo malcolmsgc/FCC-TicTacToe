@@ -77,7 +77,7 @@ class Game extends React.Component {
     handleMessageText(newGame) {
         let message;
         if (newGame) {
-            const player = this.p1Turn ?  this.props.player1.name : this.props.player2.name;
+            const player = this.state.p1Turn ?  this.props.player1.name : this.props.player2.name;
             message = `${player} to start`;
         }
         else {

@@ -25,7 +25,7 @@ class App extends React.Component {
         name: 'Player 2',
         useX: null, //boolean
         playerIsComputer: false,
-        remoteLink: '',
+        remoteLink: null,
       },
     }
   }
@@ -42,12 +42,19 @@ class App extends React.Component {
     // set p2's playerIsComputer boolean
     player2.playerIsComputer = !twoPlayer;
     // if single player game set computer details for player 2
-    player2.name = 'Robo';
-
+    if (!twoPlayer) {
+      player2.name = 'Robo';
+    }
     // if 2 player generate unique game link
-    this.createGameLink();
     // update state with link
+    if (twoPlayer && !player2.remoteLink) {
+      player2.remoteLink = this.createGameLink();
+    }
+    else { console.log( 'P2 link already generated' ); }
     // update router with link
+
+    // TO DO
+
     // use hash as id for game on firebase
     this.setState({ player2 });
   }
@@ -61,8 +68,9 @@ class App extends React.Component {
   /* Create unique game link */
   /* uses date string converted to base 36 plus suffix of random base 16 numbers */
   createGameLink() {
+    const player2 = {...this.state.player2 }
     const unique = (Date.now().toString(36) + (Math.random() * 10).toString(16).substr(2, 4));
-    console.log(unique);
+    return unique;
   }
 
   /* Sets player X or O symbols based on single player choosing a symbol */
@@ -92,6 +100,7 @@ class App extends React.Component {
               <Route path="/name/:player" render={ ({match, history}) => <EnterName match={match}
                                                                                     history={history}
                                                                                     addName={this.addName}
+                                                                                    player2Link={this.state.player2.remoteLink}
                                                                                     />
                                                   } />
               <Route exact path="/xo" render={ ({match, history}) => <XorO  match={match}

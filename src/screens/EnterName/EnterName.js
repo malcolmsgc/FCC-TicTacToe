@@ -8,12 +8,13 @@ import './entername.css';
 
 class EnterName extends React.Component {
 
+
     render() {
         const player = this.props.match.params.player;
         const showBlock = player === '1' ? false : true;
         return (
             <div className="EnterName">
-                <ShareLinkBlock player2Link="http://www.cnjcbeiucdcvde.cdnscibu.cndochudoaheo#jcido" showBlock={showBlock} />
+                <ShareLinkBlock player2Link={this.props.player2Link} showBlock={showBlock} />
                 <MessageBlock messageText={`Player ${player}, enter your name!`} />
                 <EnterNameForm  playerNum={player}
                                 history={this.props.history}
@@ -31,6 +32,7 @@ class EnterName extends React.Component {
 EnterName.PropTypes = {
     history: PropTypes.object.isRequired,
     addName: PropTypes.func.isRequired,
+    player2Link: PropTypes.string.isRequired,
   }
 
 export default EnterName;
