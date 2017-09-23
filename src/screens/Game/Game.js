@@ -16,6 +16,8 @@ class Game extends React.Component {
         this.fillCell = this.fillCell.bind(this);
         this.handleMessageText = this.handleMessageText.bind(this);
         this.state = {
+            // boolean to show if a game has started (false) or is yet to start (true)
+            cleanBoard: null,
             // which player started this game - should be swapped at game end
             p1StartedGame: null,
             // flag for each player turn - true mean it is P1 turn
@@ -44,7 +46,7 @@ class Game extends React.Component {
         for (let i=1; i <= 9; i++) {
         freshBoard[i] = null;
         }
-        this.setState( { board: freshBoard });
+        this.setState( { board: freshBoard, cleanBoard: true });
         console.log('board reset');
         return this.state.board;
     }
@@ -71,17 +73,19 @@ class Game extends React.Component {
         const symbol = this.state.p1Turn ?  ( this.props.player1.useX ? "X" : "O" ) :
                                             ( this.props.player1.useX ? "O" : "X" );
         board[cell] = symbol;
-        this.setState( { p1Turn: !this.state.p1Turn, board } );
+        this.setState( { p1Turn: !this.state.p1Turn, board, cleanBoard: false } );
     }
 
-    handleMessageText(newGame) {
+    //TO DO handle messaging for end of game - announce winner
+    handleMessageText() {
         let message;
-        if (newGame) {
+        if (this.state.cleanBoard) {
             const player = this.state.p1Turn ?  this.props.player1.name : this.props.player2.name;
             message = `${player} to start`;
         }
         else {
-            message = "You've still got to do this, Malcolm!!!"
+            const player = this.state.p1Turn ?  this.props.player1.name : this.props.player2.name;
+            message = `${player}'s turn`;
         }
         return message;
     }
@@ -101,7 +105,6 @@ class Game extends React.Component {
 
 
     render() {
-        const newGame = true; //need to add logic to do this
         return (
             <div className="game">
                 <ScoreBoard p1name={this.props.player1.name}
@@ -111,7 +114,7 @@ class Game extends React.Component {
                 <StatsBar   player1={this.props.player1}
                             player2={this.props.player2}
                             gamesPlayed={this.state.gamesPlayed} />
-                <MessageBlock messageText={this.handleMessageText(newGame)} />
+                <MessageBlock messageText={this.handleMessageText()} />
                 <GameBoard board={this.state.board} fillCell={this.fillCell}/>
                 <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => { this.props.history.goBack() } }/>
             </div>
