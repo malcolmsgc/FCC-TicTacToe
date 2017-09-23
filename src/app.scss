@@ -10,5 +10,6 @@
     .app-wrapper {
         width: 85vw;
         max-width: 768px;
+        @include main-wrapper;
     }
 }

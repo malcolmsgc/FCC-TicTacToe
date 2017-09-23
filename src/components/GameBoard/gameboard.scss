@@ -1,12 +1,25 @@
 @import '../../vars.scss';
 
 .gameboard {
-    width: 90%;
-    min-height: 10em;
+    width: 100%;
     display: flex;
     justify-content: center;
+}
+.board {
+    min-height: 10em;
+    justify-content: center;
+    flex-flow: row wrap;
+    display: flex;
+    max-width: 35em;
+    .game-row {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+        align-content: center;
+    }
     .game-cell {
         width: 10em;
+        max-width: 10em;
         height: 10em;
         color: $color-background;
         background-color: $color-game-canvas;

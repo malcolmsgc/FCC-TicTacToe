@@ -2,6 +2,9 @@
 
 
 .game {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
     button[type="button"] {
         margin-top: 3em;
     }

@@ -28,17 +28,19 @@ class GameBoard extends React.Component {
             }
         }
         return (
-            <div className="gameboard">
-            {
-                Object.keys(byRow).map( (key) =>
-                    <BoardRow   key={key} 
-                                cells={byRow[key]} 
-                                board={this.props.board}
-                                fillCell={this.props.fillCell}
-                                />    
-                )
-            }
-            </div>
+            <section className="gameboard">
+                <div className="board">
+                {
+                    Object.keys(byRow).map( (key) =>
+                        <BoardRow   key={key} 
+                                    cells={byRow[key]} 
+                                    board={this.props.board}
+                                    fillCell={this.props.fillCell}
+                                    />    
+                    )
+                }
+                </div>
+            </section>
         );
     }
 

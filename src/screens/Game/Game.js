@@ -15,6 +15,8 @@ class Game extends React.Component {
         this.setBoard = this.setBoard.bind(this);
         this.fillCell = this.fillCell.bind(this);
         this.handleMessageText = this.handleMessageText.bind(this);
+        this.gameInPlay = this.gameInPlay.bind(this);
+        this.handleScore = this.handleScore.bind(this);
         this.state = {
             // boolean to show if a game has started (false) or is yet to start (true)
             cleanBoard: null,
@@ -78,21 +80,51 @@ class Game extends React.Component {
 
     //TO DO handle messaging for end of game - announce winner
     handleMessageText() {
+        const gameInPlay = this.gameInPlay();
+        console.log(gameInPlay);
         let message;
-        if (this.state.cleanBoard) {
-            const player = this.state.p1Turn ?  this.props.player1.name : this.props.player2.name;
-            message = `${player} to start`;
+        const player = this.state.p1Turn ?  this.props.player1.name : this.props.player2.name;
+        if (gameInPlay) {
+            if (this.state.cleanBoard) {
+                message = `${player} to start`;
+            }
+            else {
+                message = `${player}'s turn`;
+            }
         }
         else {
-            const player = this.state.p1Turn ?  this.props.player1.name : this.props.player2.name;
-            message = `${player}'s turn`;
+            // TO DO - handle winner name
+            message = `${player} wins`;
         }
         return message;
+    }
+
+    handleScore() {
+
     }
 
     /* ---------- */
     /* GAME LOGIC */
     /* ---------- */
+
+    // a check to see if game is active
+    // returns boolean - false if game won/lost/drawn, true if game in progress
+    gameInPlay() {
+        // if board has been reset return true
+        if (this.state.cleanBoard) return true;
+        else {
+            let gameActive;
+            const currentBoard = {...this.state.board};
+            const cellNums = Object.keys(currentBoard);
+            // check for values in cells
+            const boardArray = cellNums.map( (cell) => currentBoard[cell] );
+            // check for empty cells
+            gameActive = boardArray.includes(null);
+            // check for win and override gameActive if win criteria met
+            
+            return gameActive;
+        }
+    }
 
 
     /* ----------------- */
@@ -101,6 +133,14 @@ class Game extends React.Component {
     componentWillMount() {
         this.setBoard();
         this.firstTurn();
+    }
+
+    componentWillUpdate() {
+
+    }
+
+    componentWillReceiveProps() {
+
     }
 
 
