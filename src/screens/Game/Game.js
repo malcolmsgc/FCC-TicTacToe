@@ -150,20 +150,34 @@ class Game extends React.Component {
     }
     
     isGameWon(cellKey) {
-        const category = this.categoriseCell(cellKey);
-        const coords = this.state.boardinates[cellKey];
-        console.log(category, coords);
-        switch (category) {
-            case 'centre': 
-                console.log('diagonal 2');
-            case 'corner': 
-                console.log('diagonal 1');
-            case 'lane': 
-            default:
-                console.log('row');
-                console.log('column');
+        const handleCorner = function (rowIncrement, colIncrement) {
+            for (let i = 0; i < 2; i++) {
+            if (rowIncrement) rowCoord++;
+            else rowCoord--;
+            if (colIncrement) colCoord++;
+            else colCoord--;
+            console.log(rowCoord, colCoord);
+            }
         }
-        
+        const category = this.categoriseCell(cellKey);
+        let [ rowCoord, colCoord ] = this.state.boardinates[cellKey];
+        const symbol = this.state.board[cellKey];
+        console.log(category, rowCoord, colCoord, symbol);
+        if (category === 'centre') {
+            console.log(rowCoord - 1, colCoord - 1);
+            console.log(rowCoord + 1, colCoord + 1);
+            // check diagonal 2
+            console.log(rowCoord - 1, colCoord + 1);
+            console.log(rowCoord + 1, colCoord - 1);
+        }
+        if (category === 'corner') {
+            // function to check whether to increment or decrement row and column coords
+            // args are booleans that increment if true and decrement if false
+            handleCorner(rowCoord < 2, colCoord < 2);
+        }
+        //case 'lane': 
+        console.log('row');
+        console.log('column');
     }
     
     // charaterises cell as 'lane','centre' or 'corner' which is used to check game progress
