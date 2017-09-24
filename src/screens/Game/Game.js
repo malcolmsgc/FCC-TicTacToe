@@ -17,6 +17,7 @@ class Game extends React.Component {
         this.handleMessageText = this.handleMessageText.bind(this);
         this.gameInPlay = this.gameInPlay.bind(this);
         this.handleScore = this.handleScore.bind(this);
+        this.setLastActive = this.setLastActive.bind(this);
         this.state = {
             // boolean to show if a game has started (false) or is yet to start (true)
             cleanBoard: null,
@@ -26,6 +27,18 @@ class Game extends React.Component {
             p1Turn: null,
             // state for cells in gameboard - get initialised with setBoard()
             board: {},
+            boardinates: {
+                1: [1,1],
+                2: [1,2],
+                3: [1,3],
+                4: [2,1],
+                5: [2,2],
+                6: [2,3],
+                7: [3,1],
+                8: [3,2],
+                9: [3,3],
+            },
+            lastActiveCell: null,
             gamesPlayed: 0,
             player1: {
                 won: 0,
@@ -81,7 +94,6 @@ class Game extends React.Component {
     //TO DO handle messaging for end of game - announce winner
     handleMessageText() {
         const gameInPlay = this.gameInPlay();
-        console.log(gameInPlay);
         let message;
         const player = this.state.p1Turn ?  this.props.player1.name : this.props.player2.name;
         if (gameInPlay) {
@@ -107,6 +119,13 @@ class Game extends React.Component {
     /* GAME LOGIC */
     /* ---------- */
 
+    // takes ID from cell on click event and updates state on Game component
+    // ID then used to check game progress
+    setLastActive(cell) {
+        console.log(this);
+        this.setState( (prevState) => ({ lastActiveCell: parseInt(cell) }) );
+    }
+
     // a check to see if game is active
     // returns boolean - false if game won/lost/drawn, true if game in progress
     gameInPlay() {
@@ -124,6 +143,13 @@ class Game extends React.Component {
             
             return gameActive;
         }
+    }
+
+    // charaterises cell as 'lane','centre' or 'corner' which is used to check game progress
+    // and determine logic for computer as player 2
+    categoriseCell(cellKey) {
+        return (cellKey % 2 === 0) ? 'lane' : 
+                                            (cellKey === 5 ? 'centre' : 'corner');
     }
 
 
@@ -155,7 +181,7 @@ class Game extends React.Component {
                             player2={this.props.player2}
                             gamesPlayed={this.state.gamesPlayed} />
                 <MessageBlock messageText={this.handleMessageText()} />
-                <GameBoard board={this.state.board} fillCell={this.fillCell}/>
+                <GameBoard board={this.state.board} fillCell={this.fillCell} setLastActive={this.setLastActive}/>
                 <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => { this.props.history.goBack() } }/>
             </div>
         );

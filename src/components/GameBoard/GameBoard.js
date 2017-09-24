@@ -36,6 +36,7 @@ class GameBoard extends React.Component {
                                     cells={byRow[key]} 
                                     board={this.props.board}
                                     fillCell={this.props.fillCell}
+                                    setLastActive={this.props.setLastActive}
                                     />    
                     )
                 }
@@ -64,6 +65,7 @@ class BoardRow extends React.Component {
                                     cell={key}
                                     cellContents={this.props.board[key]}
                                     fillCell={this.props.fillCell}
+                                    setLastActive={this.props.setLastActive}
                         /> )
                 }
             </div>
@@ -79,13 +81,15 @@ class BoardRow extends React.Component {
 class GameCell extends React.Component {
     
     render() {
-        const { cell, fillCell, cellContents } = this.props;
+        const { cell, fillCell, setLastActive, cellContents } = this.props;
         let symbolSrc;
         if (cellContents === "X") symbolSrc = cross;
         else if (cellContents === "O") symbolSrc = nought;
-        // else symbolSrc = null;
         return (
-            <div className="game-cell" onClick={ () => {fillCell(cell)} }>
+            <div className="game-cell" onClick={ () => {
+                    fillCell(cell);
+                    setLastActive(cell);
+                    } }>
                 { /* display img conditionally */ }
                 { symbolSrc ? <img className="symbolIcon" src={symbolSrc} alt={cellContents}/> : '' }
                 </div>
