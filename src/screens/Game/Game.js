@@ -38,6 +38,7 @@ class Game extends React.Component {
                 8: [3,2],
                 9: [3,3],
             },
+            gameInPlay: null,
             lastActiveCell: null,
             gamesPlayed: 0,
             player1: {
@@ -61,7 +62,7 @@ class Game extends React.Component {
         for (let i=1; i <= 9; i++) {
         freshBoard[i] = null;
         }
-        this.setState( { board: freshBoard, cleanBoard: true });
+        this.setState( { board: freshBoard, cleanBoard: true, gameInPlay: true });
         console.log('board reset');
         return this.state.board;
     }
@@ -93,7 +94,7 @@ class Game extends React.Component {
 
     //TO DO handle messaging for end of game - announce winner
     handleMessageText() {
-        const gameInPlay = this.gameInPlay();
+        const gameInPlay = this.state.gameInPlay;
         let message;
         const player = this.state.p1Turn ?  this.props.player1.name : this.props.player2.name;
         if (gameInPlay) {
@@ -122,17 +123,17 @@ class Game extends React.Component {
     // takes ID from cell on click event and updates state on Game component
     // ID then used to check game progress
     setLastActive(cell) {
-        console.log(this);
-        this.setState( (prevState) => ({ lastActiveCell: parseInt(cell) }) );
+        this.setState( { lastActiveCell: parseInt(cell, 10) });
     }
 
+    
     // a check to see if game is active
     // returns boolean - false if game won/lost/drawn, true if game in progress
     gameInPlay() {
         // if board has been reset return true
-        if (this.state.cleanBoard) return true;
+        let gameActive;
+        if (this.state.cleanBoard) gameActive = true;
         else {
-            let gameActive;
             const currentBoard = {...this.state.board};
             const cellNums = Object.keys(currentBoard);
             // check for values in cells
@@ -141,15 +142,40 @@ class Game extends React.Component {
             gameActive = boardArray.includes(null);
             // check for win and override gameActive if win criteria met
             
+            // update state with new gameInPlay flag
+            // this.setState({ gameInPlay: gameActive });
+            console.log("gameActive", gameActive);
             return gameActive;
         }
     }
-
+    
+    isGameWon(cellKey) {
+        const category = this.categoriseCell(cellKey);
+        const coords = this.state.boardinates[cellKey];
+        console.log(category, coords);
+        switch (category) {
+            case 'centre': 
+                console.log('diagonal 2');
+            case 'corner': 
+                console.log('diagonal 1');
+            case 'lane': 
+            default:
+                console.log('row');
+                console.log('column');
+        }
+        
+    }
+    
     // charaterises cell as 'lane','centre' or 'corner' which is used to check game progress
     // and determine logic for computer as player 2
     categoriseCell(cellKey) {
         return (cellKey % 2 === 0) ? 'lane' : 
                                             (cellKey === 5 ? 'centre' : 'corner');
+    }
+
+    // TO DO check if nec -  might be able to refactor out
+    getBoardinates(cellKey) {
+        return this.state.boardinates[cellKey];
     }
 
 
@@ -161,16 +187,19 @@ class Game extends React.Component {
         this.firstTurn();
     }
 
-    componentWillUpdate() {
-
+    componentDidUpdate() {
+        //TO DO will prob need to move these to fire on click event
+        this.isGameWon(this.state.lastActiveCell);
     }
-
+    
     componentWillReceiveProps() {
-
+        
     }
 
 
     render() {
+
+
         return (
             <div className="game">
                 <ScoreBoard p1name={this.props.player1.name}
