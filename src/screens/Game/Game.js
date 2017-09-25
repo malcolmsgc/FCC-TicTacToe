@@ -149,14 +149,19 @@ class Game extends React.Component {
         }
     }
     
+    // checks for cell position and then add layers of checks for line of matches
+    // centre cell needs checks on both diagonals
+    // corners need a single diagonal
+    // then all cell positions needs checks on row and column
     isGameWon(cellKey) {
         const handleCorner = function (rowIncrement, colIncrement) {
+            let [ diagR, diagC ] = [ rowCoord, colCoord ];
             for (let i = 0; i < 2; i++) {
-            if (rowIncrement) rowCoord++;
-            else rowCoord--;
-            if (colIncrement) colCoord++;
-            else colCoord--;
-            console.log(rowCoord, colCoord);
+            if (rowIncrement) diagR++;
+            else diagR--;
+            if (colIncrement) diagC++;
+            else diagC--;
+            console.log(diagR, diagC);
             }
         }
         const category = this.categoriseCell(cellKey);
@@ -164,20 +169,42 @@ class Game extends React.Component {
         const symbol = this.state.board[cellKey];
         console.log(category, rowCoord, colCoord, symbol);
         if (category === 'centre') {
-            console.log(rowCoord - 1, colCoord - 1);
-            console.log(rowCoord + 1, colCoord + 1);
+            console.log('diagonals');
+            // check diagonal 1
+            let [ diag1R, diag1C ] = [ rowCoord, colCoord ]
+            console.log(diag1R - 1, diag1C - 1);
+            console.log(diag1R + 1, diag1C + 1);
             // check diagonal 2
-            console.log(rowCoord - 1, colCoord + 1);
-            console.log(rowCoord + 1, colCoord - 1);
+            let [ diag2R, diag2C ] = [ rowCoord, colCoord ]
+            console.log(diag2R - 1, diag2C + 1);
+            console.log(diag2R + 1, diag2C - 1);
         }
         if (category === 'corner') {
             // function to check whether to increment or decrement row and column coords
             // args are booleans that increment if true and decrement if false
+            console.log('diagonal');
             handleCorner(rowCoord < 2, colCoord < 2);
         }
-        //case 'lane': 
-        console.log('row');
+        // -- column
+        let rowWorkingCoord = rowCoord;
         console.log('column');
+        for (let i = 0, step = 1; i < 2; i++) {
+            if (rowCoord < 2) rowWorkingCoord++;
+            else if (rowCoord > 2) rowWorkingCoord--;
+            else rowWorkingCoord = rowCoord + step;
+            step *= -1;
+            console.log(rowWorkingCoord, colCoord);
+        }
+        // -- row
+        let colWorkingCoord = colCoord;
+        console.log('row');
+        for (let i = 0, step = 1; i < 2; i++) {
+            if (colCoord < 2) colWorkingCoord++;
+            else if (colCoord > 2) colWorkingCoord--;
+            else colWorkingCoord = colCoord + step;
+            step *= -1;
+            console.log(rowCoord, colWorkingCoord);
+        }
     }
     
     // charaterises cell as 'lane','centre' or 'corner' which is used to check game progress
