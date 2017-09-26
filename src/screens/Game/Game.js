@@ -169,15 +169,16 @@ class Game extends React.Component {
         const symbol = this.state.board[cellKey];
         console.log(category, rowCoord, colCoord, symbol);
         //initialise counters
-        let diag1Count, diag2Count, rowCount, colCount;
+        let diag1Count, diag2Count, rowCount = 1, colCount = 1;
+        console.log(diag1Count, diag2Count, rowCount, colCount);
         if (category === 'centre') {
             console.log('diagonals');
             // check diagonal 1
-            let [ diag1R, diag1C, diag1Count ] = [ rowCoord, colCoord, 1 ]
+            let [ diag1R, diag1C, diag1Count ] = [ rowCoord, colCoord, 1 ];
             diag1Count = this.checkCellSymbol(diag1R - 1, diag1C - 1, symbol, diag1Count);
             diag1Count = this.checkCellSymbol(diag1R + 1, diag1C + 1, symbol, diag1Count);
             // check diagonal 2
-            let [ diag2R, diag2C, diag2Count ] = [ rowCoord, colCoord, 1 ]
+            let [ diag2R, diag2C, diag2Count ] = [ rowCoord, colCoord, 1 ];
             diag2Count = this.checkCellSymbol(diag2R - 1, diag2C + 1, symbol, diag2Count);
             diag2Count = this.checkCellSymbol(diag2R + 1, diag2C - 1, symbol, diag2Count);
         }
@@ -186,20 +187,24 @@ class Game extends React.Component {
             // args are booleans that increment if true and decrement if false
             console.log('diagonal');
             let [ diagR, diagC ] = [ rowCoord, colCoord ];
-            // set relevant diagonal counter to 1 to reflect the symbol placed
-            if (rowCoord < 2) diag1Count = 1;
+            const isDiag1 = (cellKey === 1 || cellKey === 9);
+            if (isDiag1) diag1Count = 1;
             else diag2Count = 1;
             for (let i = 0; i < 2; i++) {
-            if (rowCoord < 2) {
-                diagR++;
-            }
-            else {
-                diag2Count = 1;
-                diagR--;
-            }
-            if (colCoord < 2) diagC++;
-            else diagC--;
-            this.checkCellSymbol(diagR, diagC, symbol, rowCoord < 2 ? diag1Count : diag2Count);
+                if (rowCoord < 2) {
+                    diagR++;
+                }
+                else {
+                    diagR--;
+                }
+                if (colCoord < 2) diagC++;
+                else diagC--;
+                if (isDiag1) {
+                    diag1Count = this.checkCellSymbol(diagR, diagC, symbol, diag1Count);
+                }
+                else {
+                    diag2Count = this.checkCellSymbol(diagR, diagC, symbol, diag2Count);
+                }
             }
         }
         // -- column
@@ -210,7 +215,7 @@ class Game extends React.Component {
             else if (rowCoord > 2) rowWorkingCoord--;
             else rowWorkingCoord = rowCoord + step;
             step *= -1;
-            this.checkCellSymbol(rowWorkingCoord, colCoord, symbol);
+            colCount = this.checkCellSymbol(rowWorkingCoord, colCoord, symbol, colCount);
         }
         // -- row
         let colWorkingCoord = colCoord;
@@ -220,18 +225,25 @@ class Game extends React.Component {
             else if (colCoord > 2) colWorkingCoord--;
             else colWorkingCoord = colCoord + step;
             step *= -1;
-            this.checkCellSymbol(rowCoord, colWorkingCoord, symbol);
+            rowCount = this.checkCellSymbol(rowCoord, colWorkingCoord, symbol, rowCount);
+        }
+        console.log(diag1Count, diag2Count, rowCount, colCount);
+        const gameWon = [ diag1Count, diag2Count, rowCount, colCount ].some( (count) => count >=3 );
+        if (gameWon) {
+            alert('That\'s a win!');
         }
     }
 
     checkCellSymbol(rowCoord, colCoord, symbol, counter) {
+        console.log('counter' + counter);
         const { boardinates, board } = this.state;
         for (const [cell, [row, col]] of Object.entries(boardinates)) {
             if (row === rowCoord && col === colCoord) {
                 console.log(`Check cell ${cell}`);
-                if (board[cell] === symbol) return counter++;
+                if (board[cell] === symbol) counter++;
             }
         }
+        return counter;
     }
     
     // charaterises cell as 'lane','centre' or 'corner' which is used to check game progress
