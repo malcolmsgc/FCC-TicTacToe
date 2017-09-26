@@ -44,9 +44,19 @@ class Game extends React.Component {
             player1: {
                 won: 0,
                 lost: 0,
+                count: {
+                    diag: [], //index 0 is top left to bottom right, 1 is top right to bottom left
+                    row: [], // row 1-3
+                    col: [], // column 1-3
+                }
               },
               player2: {
                 won: 0,
+                count: {
+                    diag: [], //index 0 is top left to bottom right, 1 is top right to bottom left
+                    row: [], // row 1-3
+                    col: [], // column 1-3
+                }
               },
         };
     }
@@ -154,36 +164,43 @@ class Game extends React.Component {
     // corners need a single diagonal
     // then all cell positions needs checks on row and column
     isGameWon(cellKey) {
-        const handleCorner = function (rowIncrement, colIncrement) {
-            let [ diagR, diagC ] = [ rowCoord, colCoord ];
-            for (let i = 0; i < 2; i++) {
-            if (rowIncrement) diagR++;
-            else diagR--;
-            if (colIncrement) diagC++;
-            else diagC--;
-            console.log(diagR, diagC);
-            }
-        }
         const category = this.categoriseCell(cellKey);
         let [ rowCoord, colCoord ] = this.state.boardinates[cellKey];
         const symbol = this.state.board[cellKey];
         console.log(category, rowCoord, colCoord, symbol);
+        //initialise counters
+        let diag1Count, diag2Count, rowCount, colCount;
         if (category === 'centre') {
             console.log('diagonals');
             // check diagonal 1
-            let [ diag1R, diag1C ] = [ rowCoord, colCoord ]
-            console.log(diag1R - 1, diag1C - 1);
-            console.log(diag1R + 1, diag1C + 1);
+            let [ diag1R, diag1C, diag1Count ] = [ rowCoord, colCoord, 1 ]
+            diag1Count = this.checkCellSymbol(diag1R - 1, diag1C - 1, symbol, diag1Count);
+            diag1Count = this.checkCellSymbol(diag1R + 1, diag1C + 1, symbol, diag1Count);
             // check diagonal 2
-            let [ diag2R, diag2C ] = [ rowCoord, colCoord ]
-            console.log(diag2R - 1, diag2C + 1);
-            console.log(diag2R + 1, diag2C - 1);
+            let [ diag2R, diag2C, diag2Count ] = [ rowCoord, colCoord, 1 ]
+            diag2Count = this.checkCellSymbol(diag2R - 1, diag2C + 1, symbol, diag2Count);
+            diag2Count = this.checkCellSymbol(diag2R + 1, diag2C - 1, symbol, diag2Count);
         }
         if (category === 'corner') {
             // function to check whether to increment or decrement row and column coords
             // args are booleans that increment if true and decrement if false
             console.log('diagonal');
-            handleCorner(rowCoord < 2, colCoord < 2);
+            let [ diagR, diagC ] = [ rowCoord, colCoord ];
+            // set relevant diagonal counter to 1 to reflect the symbol placed
+            if (rowCoord < 2) diag1Count = 1;
+            else diag2Count = 1;
+            for (let i = 0; i < 2; i++) {
+            if (rowCoord < 2) {
+                diagR++;
+            }
+            else {
+                diag2Count = 1;
+                diagR--;
+            }
+            if (colCoord < 2) diagC++;
+            else diagC--;
+            this.checkCellSymbol(diagR, diagC, symbol, rowCoord < 2 ? diag1Count : diag2Count);
+            }
         }
         // -- column
         let rowWorkingCoord = rowCoord;
@@ -193,7 +210,7 @@ class Game extends React.Component {
             else if (rowCoord > 2) rowWorkingCoord--;
             else rowWorkingCoord = rowCoord + step;
             step *= -1;
-            console.log(rowWorkingCoord, colCoord);
+            this.checkCellSymbol(rowWorkingCoord, colCoord, symbol);
         }
         // -- row
         let colWorkingCoord = colCoord;
@@ -203,7 +220,17 @@ class Game extends React.Component {
             else if (colCoord > 2) colWorkingCoord--;
             else colWorkingCoord = colCoord + step;
             step *= -1;
-            console.log(rowCoord, colWorkingCoord);
+            this.checkCellSymbol(rowCoord, colWorkingCoord, symbol);
+        }
+    }
+
+    checkCellSymbol(rowCoord, colCoord, symbol, counter) {
+        const { boardinates, board } = this.state;
+        for (const [cell, [row, col]] of Object.entries(boardinates)) {
+            if (row === rowCoord && col === colCoord) {
+                console.log(`Check cell ${cell}`);
+                if (board[cell] === symbol) return counter++;
+            }
         }
     }
     
@@ -212,11 +239,6 @@ class Game extends React.Component {
     categoriseCell(cellKey) {
         return (cellKey % 2 === 0) ? 'lane' : 
                                             (cellKey === 5 ? 'centre' : 'corner');
-    }
-
-    // TO DO check if nec -  might be able to refactor out
-    getBoardinates(cellKey) {
-        return this.state.boardinates[cellKey];
     }
 
 
