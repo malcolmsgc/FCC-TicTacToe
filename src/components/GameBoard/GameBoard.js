@@ -79,13 +79,12 @@ class BoardRow extends React.Component {
 class GameCell extends React.Component {
     
     render() {
-        const { cell, fillCell, setLastActive, cellContents } = this.props;
+        const { cell, fillCell, cellContents } = this.props;
         let symbolSrc;
         if (cellContents === "X") symbolSrc = cross;
         else if (cellContents === "O") symbolSrc = nought;
         return (
             <div className="game-cell" onClick={ () => {
-                    //setLastActive(cell);
                     fillCell(cell);
                     } }>
                 { /* display img conditionally */ }
@@ -97,7 +96,6 @@ class GameCell extends React.Component {
     
     GameCell.PropTypes = {
         fillCell: PropTypes.func.isRequired,
-        runGameLogic: PropTypes.func
     }
 
 export default GameBoard;

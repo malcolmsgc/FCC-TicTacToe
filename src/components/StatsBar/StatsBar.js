@@ -4,10 +4,6 @@ import './statsbar.css';
 
 class StatsBar extends React.Component {
 
-    constructor(){
-        super();
-        this.updateStats = this.updateStats.bind(this);
-    }
 
 updateStats() {
     const gamesPlayed = this.props.gamesPlayed;

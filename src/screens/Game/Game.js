@@ -40,6 +40,7 @@ class Game extends React.Component {
                 9: [3,3],
             },
             gameInPlay: null,
+            gameWon: null,
             gamesPlayed: 0,
             player1: {
                 won: 0,
@@ -71,9 +72,8 @@ class Game extends React.Component {
         for (let i=1; i <= 9; i++) {
         freshBoard[i] = null;
         }
-        this.setState( { board: freshBoard, gameInPlay: true });
+        this.setState( { board: freshBoard, gameInPlay: true, gameWon: false });
         console.log('board reset');
-        return this.state.board;
     }
 
     //randomly decide which player gets first turn for game 1
@@ -172,8 +172,7 @@ class Game extends React.Component {
     // returns boolean - false if game won/lost/drawn, true if game in progress
     gameInPlay(cellID) {
         // if board has been reset return true
-        let gameActive,
-            gameWon = false;
+        let gameActive;
         if (this.state.cleanBoard) { gameActive = true }
         else {
             const currentBoard = {...this.state.board};
@@ -299,6 +298,7 @@ class Game extends React.Component {
 
     componentDidUpdate() {
         if (this.state.cleanBoard) {
+            // NEEDS ATTENTION - SNOWBALLING RE-RENDER AFTER STATS BAR UPDATES
             this.setBoard();
         }
     }
@@ -315,9 +315,7 @@ class Game extends React.Component {
                             gamesPlayed={this.state.gamesPlayed} />
                 <MessageBlock messageText={this.handleMessageText()} />
                 <GameBoard  board={this.state.board} 
-                            fillCell={this.fillCell}
-                            runGameLogic={this.runGameLogic}
-                            setLastActive={this.setLastActive}/>
+                            fillCell={this.fillCell} />
                 <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => { this.props.history.goBack() } }/>
             </div>
         );
