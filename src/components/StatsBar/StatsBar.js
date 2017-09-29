@@ -24,6 +24,10 @@ updateStats() {
     }
 }
 
+componentWillUpdate() {
+    this.updateStats();
+}
+
 render() {
     return (
         <div className="stats-bar">

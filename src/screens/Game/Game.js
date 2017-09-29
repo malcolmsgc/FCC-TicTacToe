@@ -13,11 +13,12 @@ class Game extends React.Component {
         super();
         this.firstTurn = this.firstTurn.bind(this);
         this.setBoard = this.setBoard.bind(this);
+        this.runGameLogic = this.runGameLogic.bind(this);
         this.fillCell = this.fillCell.bind(this);
         this.handleMessageText = this.handleMessageText.bind(this);
         this.gameInPlay = this.gameInPlay.bind(this);
         this.handleScore = this.handleScore.bind(this);
-        this.setLastActive = this.setLastActive.bind(this);
+        //this.setLastActive = this.setLastActive.bind(this);
         this.state = {
             // boolean to show if a game has started (false) or is yet to start (true)
             cleanBoard: null,
@@ -39,11 +40,9 @@ class Game extends React.Component {
                 9: [3,3],
             },
             gameInPlay: null,
-            lastActiveCell: null,
             gamesPlayed: 0,
             player1: {
                 won: 0,
-                lost: 0,
                 count: {
                     diag: [], //index 0 is top left to bottom right, 1 is top right to bottom left
                     row: [], // row 1-3
@@ -72,7 +71,7 @@ class Game extends React.Component {
         for (let i=1; i <= 9; i++) {
         freshBoard[i] = null;
         }
-        this.setState( { board: freshBoard, cleanBoard: true, gameInPlay: true });
+        this.setState( { board: freshBoard, gameInPlay: true });
         console.log('board reset');
         return this.state.board;
     }
@@ -99,12 +98,13 @@ class Game extends React.Component {
         const symbol = this.state.p1Turn ?  ( this.props.player1.useX ? "X" : "O" ) :
                                             ( this.props.player1.useX ? "O" : "X" );
         board[cell] = symbol;
-        this.setState( { p1Turn: !this.state.p1Turn, board, cleanBoard: false } );
+        this.setState( { board, cleanBoard: false }, () => { this.runGameLogic(cell) } );
     }
 
     //TO DO handle messaging for end of game - announce winner
     handleMessageText() {
         const gameInPlay = this.state.gameInPlay;
+        const gameWon = false;
         let message;
         const player = this.state.p1Turn ?  this.props.player1.name : this.props.player2.name;
         if (gameInPlay) {
@@ -116,33 +116,65 @@ class Game extends React.Component {
             }
         }
         else {
-            // TO DO - handle winner name
-            message = `${player} wins`;
+            //
+            if (gameWon) {
+                message = `${player} wins`;
+            }
+            else {
+                message = "It's a draw!";
+            }
         }
         return message;
     }
 
-    handleScore() {
-
+    handleScore(gameWon) {
+        const state = {...this.state};
+        if (!state.gameInPlay) {
+            if (state.gameWon) {
+                if (state.p1Turn) { 
+                    state.player1.won++;
+                }
+                else {
+                    state.player2.won++;
+                }
+            }
+            console.log(state.player1.won, state.player2.won);
+            state.gamesPlayed++;
+            //set first turn to player who went second at beginning of last game
+            state.p1Turn = !state.p1StartedGame;
+            state.p1StartedGame = !state.p1StartedGame;
+            //update state for new game and updated scores.
+            this.setState({ p1Turn: state.p1Turn,
+                            p1StartedGame: state.p1StartedGame,
+                            player1: state.player1,
+                            player2: state.player2,
+                            gamesPlayed: state.gamesPlayed,
+                            cleanBoard: true }
+                        );
+        }
+        else {
+            this.setState({ p1Turn: !state.p1Turn });
+        }
     }
 
     /* ---------- */
     /* GAME LOGIC */
     /* ---------- */
 
-    // takes ID from cell on click event and updates state on Game component
-    // ID then used to check game progress
-    setLastActive(cell) {
-        this.setState( { lastActiveCell: parseInt(cell, 10) });
+    // wrapper function to bundle functions to run on click of board cell
+    runGameLogic(cellID) {
+        //set cellID to type number to avoid strict matching errors
+        const cellNum = parseInt(cellID, 10);
+        this.gameInPlay(cellNum);
     }
-
     
     // a check to see if game is active
     // returns boolean - false if game won/lost/drawn, true if game in progress
-    gameInPlay() {
+    gameInPlay(cellID) {
         // if board has been reset return true
-        let gameActive;
-        if (this.state.cleanBoard) gameActive = true;
+        let gameActive,
+            gameWon = false;
+        if (this.state.cleanBoard) { gameActive = true }
         else {
             const currentBoard = {...this.state.board};
             const cellNums = Object.keys(currentBoard);
@@ -151,11 +183,10 @@ class Game extends React.Component {
             // check for empty cells
             gameActive = boardArray.includes(null);
             // check for win and override gameActive if win criteria met
-            
+            const gameWon = this.isGameWon(cellID);
+            gameActive = gameWon ? false : gameActive;
             // update state with new gameInPlay flag
-            // this.setState({ gameInPlay: gameActive });
-            console.log("gameActive", gameActive);
-            return gameActive;
+            this.setState({ gameInPlay: gameActive, gameWon }, () => { this.handleScore() });
         }
     }
     
@@ -164,9 +195,10 @@ class Game extends React.Component {
     // corners need a single diagonal
     // then all cell positions needs checks on row and column
     isGameWon(cellKey) {
+        console.log(cellKey);
         const category = this.categoriseCell(cellKey);
-        let [ rowCoord, colCoord ] = this.state.boardinates[cellKey];
         const symbol = this.state.board[cellKey];
+        let [ rowCoord, colCoord ] = this.state.boardinates[cellKey];
         console.log(category, rowCoord, colCoord, symbol);
         //initialise counters
         let diag1Count, diag2Count, rowCount = 1, colCount = 1;
@@ -230,15 +262,16 @@ class Game extends React.Component {
         console.log(diag1Count, diag2Count, rowCount, colCount);
         const gameWon = [ diag1Count, diag2Count, rowCount, colCount ].some( (count) => count >=3 );
         if (gameWon) {
-            alert('That\'s a win!');
+            // return true which can be used to override GameActive boolean in gameInPlay function
+            return true;
         }
     }
 
-    checkCellSymbol(rowCoord, colCoord, symbol, counter) {
-        console.log('counter' + counter);
+    // used in isGameWon func to check number of cells in line with symbol
+    checkCellSymbol(ActiveRowCoord, ActiveColCoord, symbol, counter) {
         const { boardinates, board } = this.state;
-        for (const [cell, [row, col]] of Object.entries(boardinates)) {
-            if (row === rowCoord && col === colCoord) {
+        for (const [cell, [rowCoord, colCoord]] of Object.entries(boardinates)) {
+            if (rowCoord === ActiveRowCoord && colCoord === ActiveColCoord) {
                 console.log(`Check cell ${cell}`);
                 if (board[cell] === symbol) counter++;
             }
@@ -246,7 +279,7 @@ class Game extends React.Component {
         return counter;
     }
     
-    // charaterises cell as 'lane','centre' or 'corner' which is used to check game progress
+    // characterises cell as 'lane','centre' or 'corner' which is used to check game progress
     // and determine logic for computer as player 2
     categoriseCell(cellKey) {
         return (cellKey % 2 === 0) ? 'lane' : 
@@ -257,35 +290,34 @@ class Game extends React.Component {
     /* ----------------- */
     /* LIFECYCLE METHODS */
     /* ----------------- */
+
     componentWillMount() {
+        this.setState( { cleanBoard: true } );
         this.setBoard();
         this.firstTurn();
     }
 
     componentDidUpdate() {
-        //TO DO will prob need to move these to fire on click event
-        this.isGameWon(this.state.lastActiveCell);
+        if (this.state.cleanBoard) {
+            this.setBoard();
+        }
     }
     
-    componentWillReceiveProps() {
-        
-    }
-
-
     render() {
-
-
         return (
             <div className="game">
                 <ScoreBoard p1name={this.props.player1.name}
                             p2name={this.props.player2.name}
                             p1wins={this.state.player1.won}
                             p2wins={this.state.player2.won} />
-                <StatsBar   player1={this.props.player1}
-                            player2={this.props.player2}
+                <StatsBar   player1={this.state.player1}
+                            player2={this.state.player2}
                             gamesPlayed={this.state.gamesPlayed} />
                 <MessageBlock messageText={this.handleMessageText()} />
-                <GameBoard board={this.state.board} fillCell={this.fillCell} setLastActive={this.setLastActive}/>
+                <GameBoard  board={this.state.board} 
+                            fillCell={this.fillCell}
+                            runGameLogic={this.runGameLogic}
+                            setLastActive={this.setLastActive}/>
                 <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => { this.props.history.goBack() } }/>
             </div>
         );
