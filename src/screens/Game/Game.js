@@ -45,17 +45,17 @@ class Game extends React.Component {
             player1: {
                 won: 0,
                 count: {
-                    diag: [], //index 0 is top left to bottom right, 1 is top right to bottom left
-                    row: [], // row 1-3
-                    col: [], // column 1-3
+                    diag: [0,0], //index 0 is top left to bottom right, 1 is top right to bottom left
+                    row: [0,0,0], // row 1-3
+                    col: [0,0,0], // column 1-3
                 }
               },
               player2: {
                 won: 0,
                 count: {
-                    diag: [], //index 0 is top left to bottom right, 1 is top right to bottom left
-                    row: [], // row 1-3
-                    col: [], // column 1-3
+                    diag: [0,0], //index 0 is top left to bottom right, 1 is top right to bottom left
+                    row: [0,0,0], // row 1-3
+                    col: [0,0,0], // column 1-3
                 }
               },
             gameMessage: null,
@@ -215,6 +215,7 @@ class Game extends React.Component {
     // then all cell positions needs checks on row and column
     isGameWon(cellKey) {
         console.log(cellKey);
+        const p2IsComputer = this.props.player2.playerIsComputer;
         const category = this.categoriseCell(cellKey);
         const symbol = this.state.board[cellKey];
         let [ rowCoord, colCoord ] = this.state.boardinates[cellKey];
@@ -279,6 +280,25 @@ class Game extends React.Component {
             rowCount = this.checkCellSymbol(rowCoord, colWorkingCoord, symbol, rowCount);
         }
         console.log(`COUNTERS: diag1:${diag1Count}, diag2:${diag2Count}, row:${rowCount}, col:${colCount}`);
+        // store counts for diags, rows, cols for comp to use as player 2
+        if (p2IsComputer) {
+            const playerTurn = this.state.p1Turn ? 'player1' : 'player2';
+            const player = {...this.state[playerTurn]};
+            // initialise vars to hold count arrays
+            let { diag, row, col } = player.count;
+            if (diag1Count) diag.splice(0, 1, diag1Count);
+            if (diag2Count) diag.splice(1, 1, diag2Count);
+            player.count.diag = diag;
+            // set arrays for row and col
+            // one entry per row/col
+            // index is (co-ord - 1)
+            row.splice(rowCoord - 1, 1, rowCount);
+            player.count.row = row;
+            col.splice(colCoord - 1, 1, colCount);
+            player.count.col = col;
+            console.log(player);
+            this.setState({ [`${player}`]: player });
+        }
         const gameWon = [ diag1Count, diag2Count, rowCount, colCount ].some( (count) => count >=3 );
         if (gameWon) {
             // return true which can be used to override GameActive boolean in gameInPlay function
