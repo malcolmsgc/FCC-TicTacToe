@@ -131,7 +131,6 @@ class Game extends React.Component {
                 message = "It's a draw!";
             }
         }
-        console.log(message);
         return message;
     }
 
@@ -140,8 +139,8 @@ class Game extends React.Component {
     // also handles switch of player turn
     handleScore() {
         const state = {...this.state};
-        state.gameMessage = this.handleMessageText();
         if (!state.gameInPlay) {
+            state.gameMessage = this.handleMessageText();
             if (state.gameWon) {
                 if (state.p1Turn) { 
                     state.player1.won++;
@@ -222,18 +221,21 @@ class Game extends React.Component {
         console.log(category, rowCoord, colCoord, symbol);
         //initialise counters
         let diag1Count, diag2Count, rowCount = 1, colCount = 1;
-        console.log(diag1Count, diag2Count, rowCount, colCount);
         if (category === 'centre') {
             console.log('diagonals');
             // check diagonal 1
-            let [ diag1R, diag1C, diag1Count ] = [ rowCoord, colCoord, 1 ];
+            [ diag1Count, diag2Count] = [1, 1];
+            let [ diag1R, diag1C ] = [ rowCoord, colCoord, 1 ];
             diag1Count = this.checkCellSymbol(diag1R - 1, diag1C - 1, symbol, diag1Count);
+            console.log(diag1Count);
             diag1Count = this.checkCellSymbol(diag1R + 1, diag1C + 1, symbol, diag1Count);
+            console.log(diag1Count);
             // check diagonal 2
-            let [ diag2R, diag2C, diag2Count ] = [ rowCoord, colCoord, 1 ];
+            let [ diag2R, diag2C ] = [ rowCoord, colCoord, 1 ];
             diag2Count = this.checkCellSymbol(diag2R - 1, diag2C + 1, symbol, diag2Count);
             diag2Count = this.checkCellSymbol(diag2R + 1, diag2C - 1, symbol, diag2Count);
         }
+        console.log(diag1Count);
         if (category === 'corner') {
             // function to check whether to increment or decrement row and column coords
             // args are booleans that increment if true and decrement if false
@@ -279,7 +281,7 @@ class Game extends React.Component {
             step *= -1;
             rowCount = this.checkCellSymbol(rowCoord, colWorkingCoord, symbol, rowCount);
         }
-        console.log(diag1Count, diag2Count, rowCount, colCount);
+        console.log(`COUNTERS: diag1:${diag1Count}, diag2:${diag2Count}, row:${rowCount}, col:${colCount}`);
         const gameWon = [ diag1Count, diag2Count, rowCount, colCount ].some( (count) => count >=3 );
         if (gameWon) {
             // return true which can be used to override GameActive boolean in gameInPlay function
