@@ -20,11 +20,8 @@ updateStats() {
     }
 }
 
-componentWillUpdate() {
-    this.updateStats();
-}
-
 render() {
+    this.updateStats();
     return (
         <div className="stats-bar">
             <span className="p1wins" ref={ (node) => {this.p1Stats = node} }></span>

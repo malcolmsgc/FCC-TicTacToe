@@ -18,9 +18,9 @@ class Game extends React.Component {
         this.handleMessageText = this.handleMessageText.bind(this);
         this.gameInPlay = this.gameInPlay.bind(this);
         this.handleScore = this.handleScore.bind(this);
-        //this.setLastActive = this.setLastActive.bind(this);
         this.state = {
             // boolean to show if a game has started (false) or is yet to start (true)
+            // used for message block
             cleanBoard: null,
             // which player started this game - should be swapped at game end
             p1StartedGame: null,
@@ -58,6 +58,7 @@ class Game extends React.Component {
                     col: [], // column 1-3
                 }
               },
+            gameMessage: null,
         };
     }
 
@@ -72,7 +73,15 @@ class Game extends React.Component {
         for (let i=1; i <= 9; i++) {
         freshBoard[i] = null;
         }
-        this.setState( { board: freshBoard, gameInPlay: true, gameWon: false });
+        this.setState( {    cleanBoard: true,
+                            board: freshBoard,
+                            gameInPlay: true,
+                            gameWon: false,
+                        }, 
+                        () => { 
+                            const gameMessage = this.handleMessageText();
+                            this.setState({ gameMessage }); 
+                        });
         console.log('board reset');
     }
 
@@ -85,14 +94,13 @@ class Game extends React.Component {
     /* changes state for board to update game cell */
     /* used in game cell to show correct symbol as svg or state value as alt attribute */
     fillCell(cell) {
+        // return if game over or cell already filled
+        if (!this.state.gameInPlay || this.state.board[cell]) return;
+        // error is cell value higher than numbers in grid
         if (cell < 1 || cell > 9 ) {
-        const err = new Error(`Cell ${cell} does not exist`);
-        console.error(err);
-        return;
-        }
-        if (this.state.board[cell]) {
-        console.warn(`cell already has value ${this.state.board[cell]}`);
-        return;
+            const err = new Error(`Cell ${cell} does not exist`);
+            console.error(err);
+            return;
         }
         const board = {...this.state.board};
         const symbol = this.state.p1Turn ?  ( this.props.player1.useX ? "X" : "O" ) :
@@ -103,12 +111,11 @@ class Game extends React.Component {
 
     //TO DO handle messaging for end of game - announce winner
     handleMessageText() {
-        const gameInPlay = this.state.gameInPlay;
-        const gameWon = false;
+        const { gameInPlay, cleanBoard, gameWon } = this.state;
         let message;
         const player = this.state.p1Turn ?  this.props.player1.name : this.props.player2.name;
         if (gameInPlay) {
-            if (this.state.cleanBoard) {
+            if (cleanBoard) {
                 message = `${player} to start`;
             }
             else {
@@ -124,6 +131,7 @@ class Game extends React.Component {
                 message = "It's a draw!";
             }
         }
+        console.log(message);
         return message;
     }
 
@@ -132,6 +140,7 @@ class Game extends React.Component {
     // also handles switch of player turn
     handleScore() {
         const state = {...this.state};
+        state.gameMessage = this.handleMessageText();
         if (!state.gameInPlay) {
             if (state.gameWon) {
                 if (state.p1Turn) { 
@@ -152,12 +161,17 @@ class Game extends React.Component {
                             player1: state.player1,
                             player2: state.player2,
                             gamesPlayed: state.gamesPlayed,
-                            cleanBoard: true }
+                            gameMessage: state.gameMessage,
+                        }
                             // can replace this callback setTimeout with a user event
-                        , () => { window.setTimeout(this.setBoard, 2500) } );
+                        , () => { window.setTimeout(this.setBoard, 2800) } );
         }
         else {
-            this.setState({ p1Turn: !state.p1Turn });
+            this.setState( { p1Turn: !state.p1Turn }, 
+                () => { state.gameMessage = this.handleMessageText();
+                    this.setState({ gameMessage: state.gameMessage });
+                }
+            );
         }
     }
 
@@ -298,14 +312,10 @@ class Game extends React.Component {
     /* ----------------- */
 
     componentWillMount() {
-        this.setState( { cleanBoard: true } );
         this.setBoard();
         this.firstTurn();
     }
-
-    // componentDidUpdate() {
-    // }
-    
+        
     render() {
         return (
             <div className="game">
@@ -316,7 +326,7 @@ class Game extends React.Component {
                 <StatsBar   player1={this.state.player1}
                             player2={this.state.player2}
                             gamesPlayed={this.state.gamesPlayed} />
-                <MessageBlock messageText={this.handleMessageText()} />
+                <MessageBlock messageText={ this.state.gameMessage } />
                 <GameBoard  board={this.state.board} 
                             fillCell={this.fillCell} />
                 <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => { this.props.history.goBack() } }/>
