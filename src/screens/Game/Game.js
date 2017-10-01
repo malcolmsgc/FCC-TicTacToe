@@ -225,17 +225,14 @@ class Game extends React.Component {
             console.log('diagonals');
             // check diagonal 1
             [ diag1Count, diag2Count] = [1, 1];
-            let [ diag1R, diag1C ] = [ rowCoord, colCoord, 1 ];
+            let [ diag1R, diag1C ] = [ rowCoord, colCoord ];
             diag1Count = this.checkCellSymbol(diag1R - 1, diag1C - 1, symbol, diag1Count);
-            console.log(diag1Count);
             diag1Count = this.checkCellSymbol(diag1R + 1, diag1C + 1, symbol, diag1Count);
-            console.log(diag1Count);
             // check diagonal 2
             let [ diag2R, diag2C ] = [ rowCoord, colCoord, 1 ];
             diag2Count = this.checkCellSymbol(diag2R - 1, diag2C + 1, symbol, diag2Count);
             diag2Count = this.checkCellSymbol(diag2R + 1, diag2C - 1, symbol, diag2Count);
         }
-        console.log(diag1Count);
         if (category === 'corner') {
             // function to check whether to increment or decrement row and column coords
             // args are booleans that increment if true and decrement if false
