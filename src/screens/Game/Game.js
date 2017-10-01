@@ -127,7 +127,10 @@ class Game extends React.Component {
         return message;
     }
 
-    handleScore(gameWon) {
+
+    // function to update score
+    // also handles switch of player turn
+    handleScore() {
         const state = {...this.state};
         if (!state.gameInPlay) {
             if (state.gameWon) {
@@ -150,7 +153,8 @@ class Game extends React.Component {
                             player2: state.player2,
                             gamesPlayed: state.gamesPlayed,
                             cleanBoard: true }
-                        );
+                            // can replace this callback setTimeout with a user event
+                        , () => { window.setTimeout(this.setBoard, 2500) } );
         }
         else {
             this.setState({ p1Turn: !state.p1Turn });
@@ -185,7 +189,10 @@ class Game extends React.Component {
             const gameWon = this.isGameWon(cellID);
             gameActive = gameWon ? false : gameActive;
             // update state with new gameInPlay flag
-            this.setState({ gameInPlay: gameActive, gameWon }, () => { this.handleScore() });
+            this.setState({ gameInPlay: gameActive, gameWon },
+                // callback runs handles score, which in turn has a setState call back to setBoard
+                // so that they state setting in each case is syncronous 
+                                () => {  this.handleScore(); } );
         }
     }
     
@@ -296,12 +303,8 @@ class Game extends React.Component {
         this.firstTurn();
     }
 
-    componentDidUpdate() {
-        if (this.state.cleanBoard) {
-            // NEEDS ATTENTION - SNOWBALLING RE-RENDER AFTER STATS BAR UPDATES
-            this.setBoard();
-        }
-    }
+    // componentDidUpdate() {
+    // }
     
     render() {
         return (
