@@ -293,7 +293,6 @@ class Game extends React.Component {
             // index is (co-ord - 1)
             row.splice(rowCoord - 1, 1, rowCount);
             col.splice(colCoord - 1, 1, colCount);
-            console.log(player);
             this.setState({ [`${player}`]: player });
         }
         const gameWon = [ diag1Count, diag2Count, rowCount, colCount ].some( (count) => count >=3 );
