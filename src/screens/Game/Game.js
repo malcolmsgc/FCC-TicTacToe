@@ -288,14 +288,11 @@ class Game extends React.Component {
             let { diag, row, col } = player.count;
             if (diag1Count) diag.splice(0, 1, diag1Count);
             if (diag2Count) diag.splice(1, 1, diag2Count);
-            player.count.diag = diag;
             // set arrays for row and col
             // one entry per row/col
             // index is (co-ord - 1)
             row.splice(rowCoord - 1, 1, rowCount);
-            player.count.row = row;
             col.splice(colCoord - 1, 1, colCount);
-            player.count.col = col;
             console.log(player);
             this.setState({ [`${player}`]: player });
         }
