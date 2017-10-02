@@ -97,19 +97,23 @@ class Game extends React.Component {
     /* changes state for board to update game cell */
     /* used in game cell to show correct symbol as svg or state value as alt attribute */
     fillCell(cell) {
-        // return if game over or cell already filled
-        if (!this.state.gameInPlay || this.state.board[cell]) return;
+        // return if game over
+        if (!this.state.gameInPlay) return;
+        // return if cell already filled
+        // false flag used by compAsP2 to run recursively if a chosen cell is full
+        if (this.state.board[cell]) return false;
         // error is cell value higher than numbers in grid
         if (cell < 1 || cell > 9 ) {
             const err = new Error(`Cell ${cell} does not exist`);
             console.error(err);
-            return;
+            return false;
         }
         const board = {...this.state.board};
         const symbol = this.state.p1Turn ?  ( this.props.player1.useX ? "X" : "O" ) :
                                             ( this.props.player1.useX ? "O" : "X" );
         board[cell] = symbol;
         this.setState( { board, cleanBoard: false }, () => { this.runGameLogic(cell) } );
+        return true;
     }
 
     //TO DO handle messaging for end of game - announce winner
@@ -330,15 +334,50 @@ class Game extends React.Component {
         // exit if player 1's turn
         if (this.state.p1Turn) return;
         console.log('****** compAsP2 ******');
+        let cellNum;
         const   p1Count = this.state.player1.count,
-                p2Count = this.state.player2.count;
+                p2Count = this.state.player2.count,
+                board = this.state.board;
         console.log(p1Count, p2Count);
+        // look for player 2 game winning moves
+        const test = Object.entries(p1Count).map( (array) => { 
+            const [ category, countArray ] = array;
+            /*const winImminent = countArray.some( 
+                // callback for array.some
+                (count, index, array) =>  {
+                    if (array[index] = 0) {
+                        switch (category) {
+                            case 'col':
+                            case 'row':
+                            case 'diag':
+                        }
+                    }
+                    else {
+                        return count >= 2;
+                    }
+                }
+            ); */
+            return category
+        });
+        console.log('CONSOLE TEST: ', test)  //["diag", "row", "col"]
+        // check opponent's positions and block any moves that would win the game
+        // check for open paths for potential win
+        // if no moves yet select cell at random
+        // place symbol
+        cellNum = 3;
+        const success = this.fillCell(cellNum);
+
+        if (!success) {
+            this.compAsP2();
+        }
+
     }
 
 
     /* ----------------- */
     /* LIFECYCLE METHODS */
     /* ----------------- */
+
 
     componentWillMount() {
         // set up counter and booleans to handle player turns between games
