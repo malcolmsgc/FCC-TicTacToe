@@ -18,6 +18,7 @@ class Game extends React.Component {
         this.handleMessageText = this.handleMessageText.bind(this);
         this.gameInPlay = this.gameInPlay.bind(this);
         this.handleScore = this.handleScore.bind(this);
+        this.compAsP2 = this.compAsP2.bind(this);
         this.state = {
             // boolean to show if a game has started (false) or is yet to start (true)
             // used for message block
@@ -82,6 +83,8 @@ class Game extends React.Component {
                             const gameMessage = this.handleMessageText();
                             this.setState({ gameMessage }); 
                         });
+        // trigger compAsP2 on board reset if P2 turn and P2 is computer
+        if (!this.state.p1Turn && this.props.player2.playerIsComputer) setTimeout(this.compAsP2, 2000);
         console.log('board reset');
     }
 
@@ -169,6 +172,8 @@ class Game extends React.Component {
             this.setState( { p1Turn: !state.p1Turn }, 
                 () => { state.gameMessage = this.handleMessageText();
                     this.setState({ gameMessage: state.gameMessage });
+                    // run compAsP2 if p2 turn and playerIsComputer set to true
+                    if (!this.state.p1Turn && this.props.player2.playerIsComputer) setTimeout(this.compAsP2, 2000);
                 }
             );
         }
@@ -321,14 +326,27 @@ class Game extends React.Component {
                                             (cellKey === 5 ? 'centre' : 'corner');
     }
 
+    compAsP2() {
+        // exit if player 1's turn
+        if (this.state.p1Turn) return;
+        console.log('****** compAsP2 ******');
+        const   p1Count = this.state.player1.count,
+                p2Count = this.state.player2.count;
+        console.log(p1Count, p2Count);
+    }
+
 
     /* ----------------- */
     /* LIFECYCLE METHODS */
     /* ----------------- */
 
     componentWillMount() {
-        this.setBoard();
+        // set up counter and booleans to handle player turns between games
+        // must run before setBoard so compAsP2 triggers accurately
         this.firstTurn();
+        // set up fresh board
+        // also triggers compAsP2 on board reset if P2 turn and P2 is computer
+        this.setBoard();
     }
         
     render() {
