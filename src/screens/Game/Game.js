@@ -342,22 +342,14 @@ class Game extends React.Component {
         // look for player 2 game winning moves
         const test = Object.entries(p1Count).map( (array) => { 
             const [ category, countArray ] = array;
-            /*const winImminent = countArray.some( 
-                // callback for array.some
-                (count, index, array) =>  {
-                    if (array[index] = 0) {
-                        switch (category) {
-                            case 'col':
-                            case 'row':
-                            case 'diag':
-                        }
-                    }
-                    else {
-                        return count >= 2;
-                    }
-                }
-            ); */
-            return category
+            // winImminent var to tell if at least two symbols in win path
+            // at this point this ignores whether the 3rd cell in win path is occupied
+            let winImminent = countArray.reduce( (min2indexes, count, index) =>  {
+                console.log(count, index);
+                if (count >= 2) return min2indexes.push(index);
+                else return min2indexes;
+            }, [] );
+            return [ category, winImminent ];
         });
         console.log('CONSOLE TEST: ', test)  //["diag", "row", "col"]
         // check opponent's positions and block any moves that would win the game
