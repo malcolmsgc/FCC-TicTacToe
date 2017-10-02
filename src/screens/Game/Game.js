@@ -334,35 +334,121 @@ class Game extends React.Component {
         // exit if player 1's turn
         if (this.state.p1Turn) return;
         console.log('****** compAsP2 ******');
-        let cellNum;
+        let     cellNum;
         const   p1Count = this.state.player1.count,
-                p2Count = this.state.player2.count,
-                board = this.state.board;
-        console.log(p1Count, p2Count);
+                p2Count = this.state.player2.count;
+        
+        console.log({p1Count, p2Count});
         // look for player 2 game winning moves
-        const test = Object.entries(p1Count).map( (array) => { 
+        this.findWinningCells(p2Count);
+        // check opponent's positions and block any moves that would win the game
+        this.findWinningCells(p1Count);
+        // check for open paths for potential win
+        // if no moves yet select cell at random
+        // place symbol
+        cellNum = prompt('Enter cell ID');
+        const symbolPlaced = this.fillCell(cellNum);
+
+        if (!symbolPlaced) {
+            //this.compAsP2();
+        }
+
+    }
+
+    findWinningCells( countObject ) {
+        const   { board, boardinates } = this.state;
+        const   boardinatesFlattened = Object.entries(boardinates); 
+        console.log(boardinatesFlattened);
+        const test = Object.entries( countObject ).map( (array) => { 
             const [ category, countArray ] = array;
-            // winImminent var to tell if at least two symbols in win path
+            // winCell var to show which cells would produce a winning move - shows coords
+            // first step is to tell if at least two symbols in win path
             // at this point this ignores whether the 3rd cell in win path is occupied
-            let winImminent = countArray.reduce( (min2indexes, count, index) =>  {
+            let winCells = countArray.reduce( (min2indexes, count, index) =>  {
                 console.log(count, index);
                 if (count >= 2) return min2indexes.push(index);
                 else return min2indexes;
             }, [] );
-            return [ category, winImminent ];
+            console.log(winCells);
+            //check if 3rd cell vacant
+            winCells.reduce( (min2indexes, catIndex) => {
+                    const cellIDs = [];
+                    switch (category) {
+                        case "col":     for (let i = 1; i >= 3; i++) {
+                                            cellIDs.concat( boardinatesFlattened.map( 
+                                                (keyValueArray) => { 
+                                                    // find matching board coordinate
+                                                    // index adjusted to boardinate index origin 1
+                                                    if (    keyValueArray[1][0] === i &&
+                                                            keyValueArray[1][1] === catIndex + 1 ) {
+                                                        // use key to check board object for a value
+                                                        // if value is null return the cell ID
+                                                        if (!board[keyValueArray[0]]) return keyValueArray[0];
+                                                    }
+                                                else return;
+                                                }
+                                            ) );
+                                        }
+                                        break;
+                        case "row":     for (let i = 1; i >= 3; i++) {
+                                            cellIDs.concat( boardinatesFlattened.filter( 
+                                                (keyValueArray) => { 
+                                                    // find matching board coordinate
+                                                    // index adjusted to boardinate index origin 1
+                                                    if (    keyValueArray[1][0] === catIndex + 1 &&
+                                                            keyValueArray[1][1] === i ) {
+                                                        // use key to check board object for a value
+                                                        // if value is null return the cell ID
+                                                        if (!board[keyValueArray[0]]) return true;
+                                                    }
+                                                    else return false;
+                                                }
+                                            )[0] ); // get only index 0 -- the key string
+                                        }
+                                        break;
+                                        // diag 1 - top left to bottom right
+                        case "diag":    if ( catIndex === 0 ) {
+                                            for (let i = 1; i >= 3; i++) {
+                                                cellIDs.concat( boardinatesFlattened.map( 
+                                                    (keyValueArray) => { 
+                                                        // find matching board coordinate
+                                                        // index adjusted to boardinate index origin 1
+                                                        if (    keyValueArray[1][0] === i &&
+                                                                keyValueArray[1][1] === i ) {
+                                                            // use key to check board object for a value
+                                                            // if value is null return the cell ID
+                                                            if (!board[keyValueArray[0]]) return keyValueArray[0];
+                                                        }
+                                                    }
+                                                ) );
+                                            }
+                                        }
+                                        // diag 2 - top right to bottom left
+                                        if ( catIndex === 1 ) {
+                                            for (let row = 1, col = 3; row >= 3 || col <= 1; row++, col--) {
+                                                cellIDs.concat( boardinatesFlattened.map( 
+                                                    (keyValueArray) => { 
+                                                        // find matching board coordinate
+                                                        // index adjusted to boardinate index origin 1
+                                                        if (    keyValueArray[1][0] === row &&
+                                                                keyValueArray[1][1] === col ) {
+                                                            // use key to check board object for a value
+                                                            // if value is null return the cell ID
+                                                            if (!board[keyValueArray[0]]) return keyValueArray[0];
+                                                        }
+                                                    }
+                                                ) );
+                                            }
+                                        }
+                                        break;
+                        default:        console.error( new Error('no category matched in count object') );
+                    }
+                    return min2indexes.concat(cellIDs);
+                            }, []);  
+            // returns cell IDs of empty cells in win path   
+            return winCells;
         });
-        console.log('CONSOLE TEST: ', test)  //["diag", "row", "col"]
-        // check opponent's positions and block any moves that would win the game
-        // check for open paths for potential win
-        // if no moves yet select cell at random
-        // place symbol
-        cellNum = 3;
-        const success = this.fillCell(cellNum);
-
-        if (!success) {
-            this.compAsP2();
-        }
-
+        console.log('SHOULD BE WINCELLS: ', test);
     }
 
 
