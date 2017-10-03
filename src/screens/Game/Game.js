@@ -358,8 +358,7 @@ class Game extends React.Component {
     findWinningCells( countObject ) {
         const   { board, boardinates } = this.state;
         const   boardinatesFlattened = Object.entries(boardinates); 
-        console.log(boardinatesFlattened);
-        const test = Object.entries( countObject ).map( (array) => { 
+        let winCellsArray = Object.entries( countObject ).map( (array) => { 
             const [ category, countArray ] = array;
             // winCell var to show which cells would produce a winning move - shows coords
             // first step is to tell if at least two symbols in win path
@@ -472,7 +471,11 @@ class Game extends React.Component {
             // returns cell IDs of empty cells in win path   
             return winCells;
         });
-        console.log('SHOULD BE WINCELLS: ', test);
+        // flatten winCellsArray
+        winCellsArray = winCellsArray.reduce( (accum, array) => {
+            return accum = [ ...accum, ...array ];
+        } , [] );
+        console.log('WIN CELLS: ', winCellsArray);
     }
 
 
