@@ -19,6 +19,7 @@ class Game extends React.Component {
         this.gameInPlay = this.gameInPlay.bind(this);
         this.handleScore = this.handleScore.bind(this);
         this.compAsP2 = this.compAsP2.bind(this);
+        this.setWinPathCount = this.setWinPathCount.bind(this);
         this.state = {
             // boolean to show if a game has started (false) or is yet to start (true)
             // used for message block
@@ -74,6 +75,7 @@ class Game extends React.Component {
         for (let i=1; i <= 9; i++) {
         freshBoard[i] = null;
         }
+        if (this.state.player2.playerIsComputer) this.setWinPathCount();
         this.setState( {    cleanBoard: true,
                             board: freshBoard,
                             gameInPlay: true,
@@ -84,7 +86,9 @@ class Game extends React.Component {
                             this.setState({ gameMessage }); 
                         });
         // trigger compAsP2 on board reset if P2 turn and P2 is computer
-        if (!this.state.p1Turn && this.props.player2.playerIsComputer) setTimeout(this.compAsP2, 2000);
+        if (!this.state.p1Turn && this.props.player2.playerIsComputer) {
+            setTimeout(this.compAsP2, 2000)
+        }
         console.log('board reset');
     }
 
@@ -93,6 +97,7 @@ class Game extends React.Component {
         const p1Turn = Math.random() >= 0.5;
         this.setState({ p1Turn, p1StartedGame: p1Turn });
     }
+
 
     /* changes state for board to update game cell */
     /* used in game cell to show correct symbol as svg or state value as alt attribute */
@@ -441,7 +446,7 @@ class Game extends React.Component {
                         }
                         // diag 2 - top right to bottom left
                         if ( catIndex === 1 ) {
-                            for (let row = 1, col = 3; row >= 3 || col <= 1; row++, col--) {
+                            for (let row = 1, col = 3; (row <= 3 || col >= 1); row++, col--) {
                                 cellIDs = cellIDs.concat(
                                     boardinatesFlattened.reduce( 
                                         (categCellIDs, keyValueArray) => { 
@@ -476,6 +481,18 @@ class Game extends React.Component {
             return accum = [ ...accum, ...array ];
         } , [] );
         console.log('WIN CELLS: ', winCellsArray);
+    }
+
+    setWinPathCount() {
+        const count = {
+            diag: [0,0], //index 0 is top left to bottom right, 1 is top right to bottom left
+            row: [0,0,0], // row 1-3
+            col: [0,0,0], // column 1-3
+        };
+        const { player1, player2 } = this.state;
+        player1.count = count;
+        player2.count = count;
+        this.setState({ player1, player2 });
     }
 
 
