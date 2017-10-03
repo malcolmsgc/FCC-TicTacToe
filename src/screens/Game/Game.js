@@ -75,7 +75,7 @@ class Game extends React.Component {
         for (let i=1; i <= 9; i++) {
         freshBoard[i] = null;
         }
-        if (this.state.player2.playerIsComputer) this.setWinPathCount();
+        if (this.props.player2.playerIsComputer) this.setWinPathCount();
         this.setState( {    cleanBoard: true,
                             board: freshBoard,
                             gameInPlay: true,
