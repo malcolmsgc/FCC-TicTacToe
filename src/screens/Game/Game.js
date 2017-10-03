@@ -345,13 +345,17 @@ class Game extends React.Component {
         
         console.log({p1Count, p2Count});
         // look for player 2 game winning moves
-        this.findWinningCells(p2Count);
+        let p2WinningCells = this.findWinningCells(p2Count);
+        if (p2WinningCells.length >= 1) cellNum = p2WinningCells[0]; // TO DO: MAKE THIS RANDOM SELECTION
         // check opponent's positions and block any moves that would win the game
-        this.findWinningCells(p1Count);
+        else {
+            let p1WinningCells = this.findWinningCells(p1Count);
+            if (p1WinningCells.length >= 1) cellNum = p1WinningCells[0]; // TO DO: MAKE THIS RANDOM SELECTION
+            else cellNum = prompt('Enter cell ID');
+        }
         // check for open paths for potential win
         // if no moves yet select cell at random
         // place symbol
-        cellNum = prompt('Enter cell ID');
         const symbolPlaced = this.fillCell(cellNum);
 
         if (!symbolPlaced) {
@@ -481,6 +485,7 @@ class Game extends React.Component {
             return accum = [ ...accum, ...array ];
         } , [] );
         console.log('WIN CELLS: ', winCellsArray);
+        return winCellsArray;
     }
 
     setWinPathCount() {
