@@ -374,14 +374,14 @@ class Game extends React.Component {
                 .reduce( (min2indexes, catIndex) => {
                     let cellIDs = [];
                     if (category === "col") {    
-                        for (let i = 1, a; i <= 3; i++) {
+                        for (let i = 1; i <= 3; i++) {
                             cellIDs = cellIDs.concat(
                                 boardinatesFlattened.reduce( 
                                     (categCellIDs, keyValueArray) => { 
                                     // find matching board coordinate
                                     // index adjusted to boardinate index origin 1
                                     if (    keyValueArray[1][0] === i &&
-                                        keyValueArray[1][1] === catIndex + 1 ) {
+                                            keyValueArray[1][1] === catIndex + 1 ) {
                                         // use key to check board object for a value
                                         // if value is null return the cell ID
                                         if (!board[keyValueArray[0]]) {
@@ -396,58 +396,63 @@ class Game extends React.Component {
                         }
                     }
                     else if (category === "row") {    
-                            for (let i = 1; i <= 3; i++) {
-                                            cellIDs.concat( boardinatesFlattened.map( 
-                                                (keyValueArray) => { 
-                                                    // find matching board coordinate
-                                                    // index adjusted to boardinate index origin 1
-                                                    if (    keyValueArray[1][0] === catIndex + 1 &&
-                                                            keyValueArray[1][1] === i ) {
-                                                        // use key to check board object for a value
-                                                        // if value is null return the cell ID
-                                                        if (!board[keyValueArray[0]]) return keyValueArray[0];
-                                                    }
-                                                    else return;
-                                                }
-                                            ) );
+                        for (let i = 1; i <= 3; i++) {
+                            cellIDs = cellIDs.concat(
+                                boardinatesFlattened.reduce( 
+                                    (categCellIDs, keyValueArray) => { 
+                                    // find matching board coordinate
+                                    // index adjusted to boardinate index origin 1
+                                    if (    keyValueArray[1][0] === catIndex + 1 &&
+                                            keyValueArray[1][1] === i ) {
+                                        // use key to check board object for a value
+                                        // if value is null return the cell ID
+                                        if (!board[keyValueArray[0]]) {
+                                            console.log(category);
+                                            console.log(`win cell is ${keyValueArray[0]}`);
+                                            categCellIDs.push(keyValueArray[0]);
                                         }
                                     }
-                                        // diag 1 - top left to bottom right
-                    else if (category === "diag") {    
-                                        if ( catIndex === 0 ) {
-                                            for (let i = 1; i <= 3; i++) {
-                                                cellIDs.concat( boardinatesFlattened.map( 
-                                                    (keyValueArray) => { 
-                                                        // find matching board coordinate
-                                                        // index adjusted to boardinate index origin 1
-                                                        if (    keyValueArray[1][0] === i &&
-                                                                keyValueArray[1][1] === i ) {
-                                                            // use key to check board object for a value
-                                                            // if value is null return the cell ID
-                                                            if (!board[keyValueArray[0]]) return keyValueArray[0];
-                                                        }
-                                                    }
-                                                ) );
-                                            }
-                                        }
-                                        // diag 2 - top right to bottom left
-                                        if ( catIndex === 1 ) {
-                                            for (let row = 1, col = 3; row >= 3 || col <= 1; row++, col--) {
-                                                cellIDs.concat( boardinatesFlattened.map( 
-                                                    (keyValueArray) => { 
-                                                        // find matching board coordinate
-                                                        // index adjusted to boardinate index origin 1
-                                                        if (    keyValueArray[1][0] === row &&
-                                                                keyValueArray[1][1] === col ) {
-                                                            // use key to check board object for a value
-                                                            // if value is null return the cell ID
-                                                            if (!board[keyValueArray[0]]) return keyValueArray[0];
-                                                        }
-                                                    }
-                                                ) );
-                                            }
-                                        }
+                                    return categCellIDs;
+                                }, [] )
+                            ); // end of concat parens
                         }
+                    }
+                    else if (category === "diag") {    
+                        // diag 1 - top left to bottom right
+                        if ( catIndex === 0 ) {
+                            for (let i = 1; i <= 3; i++) {
+                                cellIDs.concat( boardinatesFlattened.map( 
+                                    (keyValueArray) => { 
+                                        // find matching board coordinate
+                                        // index adjusted to boardinate index origin 1
+                                        if (    keyValueArray[1][0] === i &&
+                                                keyValueArray[1][1] === i ) {
+                                            // use key to check board object for a value
+                                            // if value is null return the cell ID
+                                            if (!board[keyValueArray[0]]) return keyValueArray[0];
+                                        }
+                                    }
+                                ) );
+                            }
+                        }
+                        // diag 2 - top right to bottom left
+                        if ( catIndex === 1 ) {
+                            for (let row = 1, col = 3; row >= 3 || col <= 1; row++, col--) {
+                                cellIDs.concat( boardinatesFlattened.map( 
+                                    (keyValueArray) => { 
+                                        // find matching board coordinate
+                                        // index adjusted to boardinate index origin 1
+                                        if (    keyValueArray[1][0] === row &&
+                                                keyValueArray[1][1] === col ) {
+                                            // use key to check board object for a value
+                                            // if value is null return the cell ID
+                                            if (!board[keyValueArray[0]]) return keyValueArray[0];
+                                        }
+                                    }
+                                ) );
+                            }
+                        }
+                    }
                     else {
                         console.error( new Error('no category matched in count object') );
                     }
