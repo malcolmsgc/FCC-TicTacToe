@@ -365,33 +365,39 @@ class Game extends React.Component {
             // first step is to tell if at least two symbols in win path
             // at this point this ignores whether the 3rd cell in win path is occupied
             let winCells = countArray.reduce( (min2indexes, count, index) =>  {
-                console.log(count, index);
-                if (count >= 2) return min2indexes.push(index);
-                else return min2indexes;
-            }, [] );
-            console.log(winCells);
-            //check if 3rd cell vacant
-            winCells.reduce( (min2indexes, catIndex) => {
-                    const cellIDs = [];
-                    switch (category) {
-                        case "col":     for (let i = 1; i >= 3; i++) {
-                                            cellIDs.concat( boardinatesFlattened.map( 
-                                                (keyValueArray) => { 
-                                                    // find matching board coordinate
-                                                    // index adjusted to boardinate index origin 1
-                                                    if (    keyValueArray[1][0] === i &&
-                                                            keyValueArray[1][1] === catIndex + 1 ) {
-                                                        // use key to check board object for a value
-                                                        // if value is null return the cell ID
-                                                        if (!board[keyValueArray[0]]) return keyValueArray[0];
-                                                    }
-                                                else return;
-                                                }
-                                            ) );
+                console.log(category, count, index);
+                if (count >= 2) min2indexes.push(index);
+                return min2indexes;
+            }, [] )
+                // chain reduce to
+                //check if 3rd cell vacant
+                .reduce( (min2indexes, catIndex) => {
+                    let cellIDs = [];
+                    if (category === "col") {    
+                        for (let i = 1, a; i <= 3; i++) {
+                            cellIDs = cellIDs.concat(
+                                boardinatesFlattened.reduce( 
+                                    (categCellIDs, keyValueArray) => { 
+                                    // find matching board coordinate
+                                    // index adjusted to boardinate index origin 1
+                                    if (    keyValueArray[1][0] === i &&
+                                        keyValueArray[1][1] === catIndex + 1 ) {
+                                        // use key to check board object for a value
+                                        // if value is null return the cell ID
+                                        if (!board[keyValueArray[0]]) {
+                                            console.log(category);
+                                            console.log(`win cell is ${keyValueArray[0]}`);
+                                            categCellIDs.push(keyValueArray[0]);
                                         }
-                                        break;
-                        case "row":     for (let i = 1; i >= 3; i++) {
-                                            cellIDs.concat( boardinatesFlattened.filter( 
+                                    }
+                                    return categCellIDs;
+                                }, [] )
+                            ); // end of concat parens
+                        }
+                    }
+                    else if (category === "row") {    
+                            for (let i = 1; i <= 3; i++) {
+                                            cellIDs.concat( boardinatesFlattened.map( 
                                                 (keyValueArray) => { 
                                                     // find matching board coordinate
                                                     // index adjusted to boardinate index origin 1
@@ -399,16 +405,17 @@ class Game extends React.Component {
                                                             keyValueArray[1][1] === i ) {
                                                         // use key to check board object for a value
                                                         // if value is null return the cell ID
-                                                        if (!board[keyValueArray[0]]) return true;
+                                                        if (!board[keyValueArray[0]]) return keyValueArray[0];
                                                     }
-                                                    else return false;
+                                                    else return;
                                                 }
-                                            )[0] ); // get only index 0 -- the key string
+                                            ) );
                                         }
-                                        break;
+                                    }
                                         // diag 1 - top left to bottom right
-                        case "diag":    if ( catIndex === 0 ) {
-                                            for (let i = 1; i >= 3; i++) {
+                    else if (category === "diag") {    
+                                        if ( catIndex === 0 ) {
+                                            for (let i = 1; i <= 3; i++) {
                                                 cellIDs.concat( boardinatesFlattened.map( 
                                                     (keyValueArray) => { 
                                                         // find matching board coordinate
@@ -440,9 +447,11 @@ class Game extends React.Component {
                                                 ) );
                                             }
                                         }
-                                        break;
-                        default:        console.error( new Error('no category matched in count object') );
+                        }
+                    else {
+                        console.error( new Error('no category matched in count object') );
                     }
+                    
                     return min2indexes.concat(cellIDs);
                             }, []);  
             // returns cell IDs of empty cells in win path   
