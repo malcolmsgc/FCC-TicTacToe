@@ -89,7 +89,6 @@ class Game extends React.Component {
         if (!this.state.p1Turn && this.props.player2.playerIsComputer) {
             setTimeout(this.compAsP2, 2000)
         }
-        console.log('board reset');
     }
 
     //randomly decide which player gets first turn for game 1
@@ -161,7 +160,6 @@ class Game extends React.Component {
                     state.player2.won++;
                 }
             }
-            console.log(state.player1.won, state.player2.won);
             state.gamesPlayed++;
             //set first turn to player who went second at beginning of last game
             state.p1Turn = !state.p1StartedGame;
@@ -228,16 +226,13 @@ class Game extends React.Component {
     // corners need a single diagonal
     // then all cell positions needs checks on row and column
     isGameWon(cellKey) {
-        console.log(cellKey);
         const p2IsComputer = this.props.player2.playerIsComputer;
         const category = this.categoriseCell(cellKey);
         const symbol = this.state.board[cellKey];
         let [ rowCoord, colCoord ] = this.state.boardinates[cellKey];
-        console.log(category, rowCoord, colCoord, symbol);
         //initialise counters
         let diag1Count, diag2Count, rowCount = 1, colCount = 1;
         if (category === 'centre') {
-            console.log('diagonals');
             // check diagonal 1
             [ diag1Count, diag2Count] = [1, 1];
             let [ diag1R, diag1C ] = [ rowCoord, colCoord ];
@@ -251,7 +246,6 @@ class Game extends React.Component {
         if (category === 'corner') {
             // function to check whether to increment or decrement row and column coords
             // args are booleans that increment if true and decrement if false
-            console.log('diagonal');
             let [ diagR, diagC ] = [ rowCoord, colCoord ];
             const isDiag1 = (cellKey === 1 || cellKey === 9);
             if (isDiag1) diag1Count = 1;
@@ -275,7 +269,6 @@ class Game extends React.Component {
         }
         // -- column
         let rowWorkingCoord = rowCoord;
-        console.log('column');
         for (let i = 0, step = 1; i < 2; i++) {
             if (rowCoord < 2) rowWorkingCoord++;
             else if (rowCoord > 2) rowWorkingCoord--;
@@ -285,7 +278,6 @@ class Game extends React.Component {
         }
         // -- row
         let colWorkingCoord = colCoord;
-        console.log('row');
         for (let i = 0, step = 1; i < 2; i++) {
             if (colCoord < 2) colWorkingCoord++;
             else if (colCoord > 2) colWorkingCoord--;
@@ -298,9 +290,7 @@ class Game extends React.Component {
         if (p2IsComputer) {
             const playerTurn = this.state.p1Turn ? 'player1' : 'player2';
             const player = {...this.state[playerTurn]};
-            console.log(playerTurn, player.count);
             // initialise vars to hold count arrays
-            //let { diag, row, col } = player.count;
             let diag = [...player.count.diag];
             let row = [...player.count.row];
             let col = [...player.count.col];
@@ -311,9 +301,7 @@ class Game extends React.Component {
             // index is (co-ord - 1)
             row.splice(rowCoord - 1, 1, rowCount);
             col.splice(colCoord - 1, 1, colCount);
-            let newCount = { diag, row , col };
-            player.count = newCount;
-            console.log('After splices', player.count);
+            player.count = { diag, row, col };
             this.setState({ [`${playerTurn}`]: player });
         }
         const gameWon = [ diag1Count, diag2Count, rowCount, colCount ].some( (count) => count >=3 );
@@ -328,7 +316,6 @@ class Game extends React.Component {
         const { boardinates, board } = this.state;
         for (const [cell, [rowCoord, colCoord]] of Object.entries(boardinates)) {
             if (rowCoord === ActiveRowCoord && colCoord === ActiveColCoord) {
-                console.log(`Check cell ${cell}`);
                 if (board[cell] === symbol) counter++;
             }
         }
@@ -350,7 +337,6 @@ class Game extends React.Component {
         const   p1Count = this.state.player1.count,
                 p2Count = this.state.player2.count;
         
-        console.log({p1Count, p2Count});
         // look for player 2 game winning moves
         let p2WinningCells = this.findWinningCells(p2Count, 2);
         if (p2WinningCells.length >= 1) cellNum = p2WinningCells[0];
@@ -368,7 +354,6 @@ class Game extends React.Component {
             // Generate random cell to place symbol in
                 else {
                     cellNum = Math.ceil(Math.random()*9);
-                    console.log(`CELL GENERATED: ${cellNum}`);
                 }
             }  
         }
@@ -389,7 +374,6 @@ class Game extends React.Component {
             // first step is to tell if at least two symbols in win path
             // at this point this ignores whether the 3rd cell in win path is occupied
             let winCells = countArray.reduce( (numInWinPathIndexes, count, index) =>  {
-                console.log(category, count, index);
                 if (count >= numInWinPath) numInWinPathIndexes.push(index);
                 return numInWinPathIndexes;
             }, [] )
