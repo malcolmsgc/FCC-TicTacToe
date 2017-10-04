@@ -37,6 +37,7 @@ class GameBoard extends React.Component {
                                     board={this.props.board}
                                     fillCell={this.props.fillCell}
                                     p2IsComp={this.props.p2IsComp}
+                                    p1Turn={this.props.p1Turn}
                                     />    
                     )
                 }
@@ -51,7 +52,10 @@ class GameBoard extends React.Component {
 
 GameBoard.PropTypes = {
     board: PropTypes.object.isRequired,
-    fillCell: PropTypes.func.isRequired
+    fillCell: PropTypes.func.isRequired,
+    p2IsComp: PropTypes.bool.isRequired,
+    p1Turn: PropTypes.bool.isRequired,
+    cell: PropTypes.string.isRequired,
 }
 
 class BoardRow extends React.Component {
@@ -66,6 +70,7 @@ class BoardRow extends React.Component {
                                     cellContents={this.props.board[key]}
                                     fillCell={this.props.fillCell}
                                     p2IsComp={this.props.p2IsComp}
+                                    p1Turn={this.props.p1Turn}
                         /> )
                 }
             </div>
@@ -75,23 +80,25 @@ class BoardRow extends React.Component {
     }
     
     BoardRow.PropTypes = {
-        fillCell: PropTypes.func.isRequired
+        board: PropTypes.object.isRequired,
+        fillCell: PropTypes.func.isRequired,
+        p2IsComp: PropTypes.bool.isRequired,
+        p1Turn: PropTypes.bool.isRequired,
+        cell: PropTypes.string.isRequired,
     }
 
 class GameCell extends React.Component {
     
     render() {
-        const { cell, fillCell, cellContents, p2IsComp } = this.props;
+        const { cell, fillCell, cellContents, p2IsComp, p1Turn } = this.props;
         let symbolSrc;
         if (cellContents === "X") symbolSrc = cross;
         else if (cellContents === "O") symbolSrc = nought;
         return (
             <div className="game-cell" onClick={ () => {
-                    if (!p2IsComp) {
+                    if (!p2IsComp || p2IsComp && p1Turn) {
                         fillCell(cell);
-                    }
-                    
-                    } }>
+                    } } }>
                 { /* display img conditionally */ }
                 { symbolSrc ? <img className="symbolIcon" src={symbolSrc} alt={cellContents}/> : '' }
                 </div>
@@ -102,6 +109,7 @@ class GameCell extends React.Component {
     GameCell.PropTypes = {
         fillCell: PropTypes.func.isRequired,
         p2IsComp: PropTypes.bool.isRequired,
+        p1Turn: PropTypes.bool.isRequired,
         cell: PropTypes.string.isRequired,
         cellContents: PropTypes.string.isRequired,
     }

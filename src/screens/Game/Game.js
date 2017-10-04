@@ -547,7 +547,8 @@ class Game extends React.Component {
                 <MessageBlock messageText={ this.state.gameMessage } />
                 <GameBoard  board={this.state.board} 
                             fillCell={this.fillCell}
-                            p2IsComp={this.props.player2.playerIsComputer} />
+                            p2IsComp={this.props.player2.playerIsComputer} 
+                            p1Turn={this.state.p1Turn} />
                 <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => { this.props.history.goBack() } }/>
             </div>
         );
