@@ -36,6 +36,7 @@ class GameBoard extends React.Component {
                                     cells={byRow[key]} 
                                     board={this.props.board}
                                     fillCell={this.props.fillCell}
+                                    p2IsComp={this.props.p2IsComp}
                                     />    
                     )
                 }
@@ -64,6 +65,7 @@ class BoardRow extends React.Component {
                                     cell={key}
                                     cellContents={this.props.board[key]}
                                     fillCell={this.props.fillCell}
+                                    p2IsComp={this.props.p2IsComp}
                         /> )
                 }
             </div>
@@ -79,13 +81,16 @@ class BoardRow extends React.Component {
 class GameCell extends React.Component {
     
     render() {
-        const { cell, fillCell, cellContents } = this.props;
+        const { cell, fillCell, cellContents, p2IsComp } = this.props;
         let symbolSrc;
         if (cellContents === "X") symbolSrc = cross;
         else if (cellContents === "O") symbolSrc = nought;
         return (
             <div className="game-cell" onClick={ () => {
-                    fillCell(cell);
+                    if (!p2IsComp) {
+                        fillCell(cell);
+                    }
+                    
                     } }>
                 { /* display img conditionally */ }
                 { symbolSrc ? <img className="symbolIcon" src={symbolSrc} alt={cellContents}/> : '' }
@@ -96,6 +101,9 @@ class GameCell extends React.Component {
     
     GameCell.PropTypes = {
         fillCell: PropTypes.func.isRequired,
+        p2IsComp: PropTypes.bool.isRequired,
+        cell: PropTypes.string.isRequired,
+        cellContents: PropTypes.string.isRequired,
     }
 
 export default GameBoard;

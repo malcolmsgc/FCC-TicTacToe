@@ -298,8 +298,12 @@ class Game extends React.Component {
         if (p2IsComputer) {
             const playerTurn = this.state.p1Turn ? 'player1' : 'player2';
             const player = {...this.state[playerTurn]};
+            console.log(playerTurn, player.count);
             // initialise vars to hold count arrays
-            let { diag, row, col } = player.count;
+            //let { diag, row, col } = player.count;
+            let diag = [...player.count.diag];
+            let row = [...player.count.row];
+            let col = [...player.count.col];
             if (diag1Count) diag.splice(0, 1, diag1Count);
             if (diag2Count) diag.splice(1, 1, diag2Count);
             // set arrays for row and col
@@ -307,7 +311,10 @@ class Game extends React.Component {
             // index is (co-ord - 1)
             row.splice(rowCoord - 1, 1, rowCount);
             col.splice(colCoord - 1, 1, colCount);
-            this.setState({ [`${player}`]: player });
+            let newCount = { diag, row , col };
+            player.count = newCount;
+            console.log('After splices', player.count);
+            this.setState({ [`${playerTurn}`]: player });
         }
         const gameWon = [ diag1Count, diag2Count, rowCount, colCount ].some( (count) => count >=3 );
         if (gameWon) {
@@ -345,18 +352,26 @@ class Game extends React.Component {
         
         console.log({p1Count, p2Count});
         // look for player 2 game winning moves
-        let p2WinningCells = this.findWinningCells(p2Count);
+        let p2WinningCells = this.findWinningCells(p2Count, 2);
         if (p2WinningCells.length >= 1) cellNum = p2WinningCells[0];
         else {
             // check opponent's positions and block any moves that would win the game
-            let p1WinningCells = this.findWinningCells(p1Count);
+            let p1WinningCells = this.findWinningCells(p1Count, 2);
             if (p1WinningCells.length >= 1) cellNum = p1WinningCells[0];
-            // generate random cell ID to use
-            else cellNum = Math.ceil(Math.random()*9);
-            console.log(`CELL GENERATED: ${cellNum}`);
+            else {
+            // look for P2 win paths with at least one cell
+                p2WinningCells = this.findWinningCells(p2Count, 1);
+                if (p2WinningCells.length >= 1) {
+                    const index = Math.floor(Math.random() * p2WinningCells.length);
+                    cellNum = p2WinningCells[index];
+                }
+            // Generate random cell to place symbol in
+                else {
+                    cellNum = Math.ceil(Math.random()*9);
+                    console.log(`CELL GENERATED: ${cellNum}`);
+                }
+            }  
         }
-        // check for open paths for potential win
-        // if no moves yet select cell at random
         // place symbol - returns boolean set to true if successful placement, false if cell occupied
         const symbolPlaced = this.fillCell(cellNum);
         if (!symbolPlaced) {
@@ -365,7 +380,7 @@ class Game extends React.Component {
 
     }
 
-    findWinningCells( countObject ) {
+    findWinningCells( countObject, numInWinPath = 2 ) {
         const   { board, boardinates } = this.state;
         const   boardinatesFlattened = Object.entries(boardinates); 
         let winCellsArray = Object.entries( countObject ).map( (array) => { 
@@ -373,14 +388,14 @@ class Game extends React.Component {
             // winCell var to show which cells would produce a winning move - shows coords
             // first step is to tell if at least two symbols in win path
             // at this point this ignores whether the 3rd cell in win path is occupied
-            let winCells = countArray.reduce( (min2indexes, count, index) =>  {
+            let winCells = countArray.reduce( (numInWinPathIndexes, count, index) =>  {
                 console.log(category, count, index);
-                if (count >= 2) min2indexes.push(index);
-                return min2indexes;
+                if (count >= numInWinPath) numInWinPathIndexes.push(index);
+                return numInWinPathIndexes;
             }, [] )
                 // chain reduce to
                 //check if 3rd cell vacant
-                .reduce( (min2indexes, catIndex) => {
+                .reduce( (numInWinPathIndexes, catIndex) => {
                     let cellIDs = [];
                     if (category === "col") {    
                         for (let i = 1; i <= 3; i++) {
@@ -393,6 +408,9 @@ class Game extends React.Component {
                                             keyValueArray[1][1] === catIndex + 1 ) {
                                         // use key to check board object for a value
                                         // if value is null return the cell ID
+                                        // NB: this works properly when numInWinPath === 2
+                                        // but is less useful for numInWinPath === 1 
+                                        // as more cells in need to be clear to qualify as win path
                                         if (!board[keyValueArray[0]]) {
                                             console.log(category);
                                             console.log(`win cell is ${keyValueArray[0]}`);
@@ -476,7 +494,7 @@ class Game extends React.Component {
                         console.error( new Error('no category matched in count object') );
                     }
                     
-                    return min2indexes.concat(cellIDs);
+                    return numInWinPathIndexes.concat(cellIDs);
                             }, []);  
             // returns cell IDs of empty cells in win path   
             return winCells;
@@ -485,7 +503,7 @@ class Game extends React.Component {
         winCellsArray = winCellsArray.reduce( (accum, array) => {
             return accum = [ ...accum, ...array ];
         } , [] );
-        console.log('WIN CELLS: ', winCellsArray);
+        console.log(`WIN PATH (${numInWinPath}) CELLS: ${winCellsArray}`);
         return winCellsArray;
     }
 
@@ -528,7 +546,8 @@ class Game extends React.Component {
                             gamesPlayed={this.state.gamesPlayed} />
                 <MessageBlock messageText={ this.state.gameMessage } />
                 <GameBoard  board={this.state.board} 
-                            fillCell={this.fillCell} />
+                            fillCell={this.fillCell}
+                            p2IsComp={this.props.player2.playerIsComputer} />
                 <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => { this.props.history.goBack() } }/>
             </div>
         );
