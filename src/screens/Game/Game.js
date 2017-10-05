@@ -44,6 +44,7 @@ class Game extends React.Component {
             gameInPlay: null,
             gameWon: null,
             gamesPlayed: 0,
+            wonPath: [], //array of 3 cell IDs as strings
             player1: {
                 won: 0,
                 count: {
@@ -80,6 +81,7 @@ class Game extends React.Component {
                             board: freshBoard,
                             gameInPlay: true,
                             gameWon: false,
+                            wonPath: [],
                         }, 
                         () => { 
                             const gameMessage = this.handleMessageText();
@@ -304,8 +306,14 @@ class Game extends React.Component {
             player.count = { diag, row, col };
             this.setState({ [`${playerTurn}`]: player });
         }
-        const gameWon = [ diag1Count, diag2Count, rowCount, colCount ].some( (count) => count >=3 );
-        if (gameWon) {
+        const gameWon = [ diag1Count, diag2Count, rowCount, colCount ].findIndex( (count) => count >=3 );
+        // use index value to enter if and pass index of category to showWonPath function
+        // showWonPath function sets state for wonPath array
+        console.log(gameWon);
+        if (gameWon > 0) {
+            const pathCategory = [ "diag1", "diag2", "row", "col" ][gameWon];
+            // use style change to show win path
+            this.showWonPath( pathCategory, rowCoord, colCoord );
             // return true which can be used to override GameActive boolean in gameInPlay function
             return true;
         }
@@ -503,6 +511,50 @@ class Game extends React.Component {
         this.setState({ player1, player2 });
     }
 
+    // called from inside isGameWon
+    // pathCategory arg can be any of the following: "diag1", "diag2", "row", "col"
+    // other co-ords are in 1-3 range in 9 block grid
+    showWonPath( pathCategory, rowCoord, colCoord ) {
+        const wonPathCoords = [];
+        let wonPath = [];
+        if (pathCategory === "diag1") {
+            wonPath = ["1", "5", "9"];
+        }
+        else if (pathCategory === "diag2") {
+            wonPath = ["3", "5", "7"];
+        }
+        else {
+            if (pathCategory === "row") {
+                // build array of coords for row
+                for ( let i = 1; i <= 3; i++ ) {
+                    wonPathCoords.push([ rowCoord, i ]);
+                }
+                
+            }
+            if (pathCategory === "col") {
+                // build array of coords for column
+                for ( let i = 1; i <= 3; i++ ) {
+                    wonPathCoords.push([ i, colCoord ]);
+                }
+            }
+            // match against boardinates values 
+            // and insert matched boardinates key in wonPath array
+            const boardinates = Object.entries(this.state.boardinates);
+            for ( let [ cell , coords ] of boardinates ) {
+                wonPathCoords.forEach(
+                    (winArray) => {
+                        if (    coords[0] === winArray[0] &&
+                                coords[1] === winArray[1] ) {
+                                    wonPath.push(cell);
+                                }
+                    }
+                );
+            }
+        }
+        console.log(wonPath);
+        this.setState({ wonPath })
+    }
+    
 
     /* ----------------- */
     /* LIFECYCLE METHODS */
@@ -532,7 +584,8 @@ class Game extends React.Component {
                 <GameBoard  board={this.state.board} 
                             fillCell={this.fillCell}
                             p2IsComp={this.props.player2.playerIsComputer} 
-                            p1Turn={this.state.p1Turn} />
+                            p1Turn={this.state.p1Turn} 
+                            wonPath={this.state.wonPath}/>
                 <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => { this.props.history.goBack() } }/>
             </div>
         );

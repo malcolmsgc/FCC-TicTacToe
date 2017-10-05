@@ -38,6 +38,7 @@ class GameBoard extends React.Component {
                                     fillCell={this.props.fillCell}
                                     p2IsComp={this.props.p2IsComp}
                                     p1Turn={this.props.p1Turn}
+                                    wonPath={this.props.wonPath}
                                     />    
                     )
                 }
@@ -56,6 +57,7 @@ GameBoard.PropTypes = {
     p2IsComp: PropTypes.bool.isRequired,
     p1Turn: PropTypes.bool.isRequired,
     cell: PropTypes.string.isRequired,
+    wonPath: PropTypes.object,
 }
 
 class BoardRow extends React.Component {
@@ -71,6 +73,7 @@ class BoardRow extends React.Component {
                                     fillCell={this.props.fillCell}
                                     p2IsComp={this.props.p2IsComp}
                                     p1Turn={this.props.p1Turn}
+                                    wonPath={this.props.wonPath}
                         /> )
                 }
             </div>
@@ -85,22 +88,28 @@ class BoardRow extends React.Component {
         p2IsComp: PropTypes.bool.isRequired,
         p1Turn: PropTypes.bool.isRequired,
         cell: PropTypes.string.isRequired,
+        wonPath: PropTypes.object,
     }
 
 class GameCell extends React.Component {
     
     render() {
-        const { cell, fillCell, cellContents, p2IsComp, p1Turn } = this.props;
+        const { cell, fillCell, cellContents, p2IsComp, p1Turn, wonPath } = this.props;
+        const onWonPath = wonPath.includes(cell);
         let symbolSrc;
         if (cellContents === "X") symbolSrc = cross;
         else if (cellContents === "O") symbolSrc = nought;
         return (
-            <div className="game-cell" onClick={ () => {
+            <div className={onWonPath ? "game-cell winpath" : "game-cell"} onClick={ () => {
                     if (!p2IsComp || (p2IsComp && p1Turn)) {
                         fillCell(cell);
                     } } }>
                 { /* display img conditionally */ }
-                { symbolSrc ? <object type="image/svg+xml" className="symbolIcon" data={symbolSrc} alt={cellContents}/> : '' }
+                { symbolSrc ? <object   type="image/svg+xml" 
+                                        className="symbolIcon" 
+                                        data={symbolSrc} 
+                                        aria-label={cellContents} 
+                                        >{cellContents}</object> : '' }
                 </div>
         );
     }
@@ -112,6 +121,7 @@ class GameCell extends React.Component {
         p1Turn: PropTypes.bool.isRequired,
         cell: PropTypes.string.isRequired,
         cellContents: PropTypes.string.isRequired,
+        wonPath: PropTypes.object,
     }
 
 export default GameBoard;
