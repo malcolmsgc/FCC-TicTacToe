@@ -107,12 +107,8 @@ class GameCell extends React.Component {
                         fillCell(cell);
                     } } }>
                 { /* display img conditionally */ }
-                { symbolSrc ? <object   type="image/svg+xml" 
-                                        className="symbolIcon" 
-                                        data={symbolSrc} 
-                                        aria-label={cellContents} 
-                                        >{cellContents}</object> : '' }
-                </div>
+                { symbolSrc ? <img className="symbolIcon" src={symbolSrc} alt={cellContents}/> : '' }
+            </div>
         );
     }
 }
