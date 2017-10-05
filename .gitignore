@@ -12,6 +12,9 @@ src/**/*.css
 # production
 /build
 
+#rebase module - has API key
+src/rebase.js
+
 # misc
 .DS_Store
 .env.local

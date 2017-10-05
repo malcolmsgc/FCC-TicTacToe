@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Link, Switch, Redirect } from 'react-router-dom';
+import rebase from './rebase.js';
 import Header from './components/Header/Header.js';
 import NumPlayers from './screens/NumPlayers/NumPlayers.js';
 import EnterName from './screens/EnterName/EnterName.js';
@@ -90,6 +91,7 @@ class App extends React.Component {
 
 
   render() {
+    const p2isComp = this.state.player2.playerIsComputer;
     return (
       <div className="App">
           <Header />
@@ -97,7 +99,7 @@ class App extends React.Component {
           <BrowserRouter>
             <Switch>
               <Route exact path="/" render={ () => <NumPlayers isTwoPlayer={this.isTwoPlayer} />} />
-              <Route path="/name/:player" render={ ({match, history}) => (this.state.player2.playerIsComputer === null) ?
+              <Route path={p2isComp ? "/name/:player" : "/name/:player/:gamekey"} render={ ({match, history}) => (p2isComp === null) ?
                                                                             (<Redirect to="/" />) :
                                                                             (<EnterName match={match}
                                                                             history={history}
@@ -105,7 +107,7 @@ class App extends React.Component {
                                                                             player2Link={this.state.player2.remoteLink}
                                                                             />)
                                                   } />
-              <Route exact path="/xo" render={ ({match, history}) => (this.state.player2.playerIsComputer === null) ?
+              <Route exact path={p2isComp ? "/xo" : "/xo/:gamekey"} render={ ({match, history}) => (p2isComp === null) ?
                                                                             (<Redirect to="/" />) :
                                                                             (<XorO  match={match}
                                                                             history={history}
@@ -115,7 +117,7 @@ class App extends React.Component {
                                                                             twoPlayer={!this.state.player2.playerIsComputer}
                                                       />) }
                                                 />
-              <Route path="/gameon" render={ ({match, history}) => (this.state.player2.playerIsComputer === null) ?
+              <Route path={p2isComp ? "/gameon/" : "/gameon/:gamekey"} render={ ({match, history}) => (this.state.player2.playerIsComputer === null) ?
                                                                           (<Redirect to="/" />) :
                                                                           (<Game  player1={this.state.player1}
                                                                           player2={this.state.player2}
