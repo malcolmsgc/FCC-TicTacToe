@@ -96,11 +96,11 @@ class GameCell extends React.Component {
         else if (cellContents === "O") symbolSrc = nought;
         return (
             <div className="game-cell" onClick={ () => {
-                    if (!p2IsComp || p2IsComp && p1Turn) {
+                    if (!p2IsComp || (p2IsComp && p1Turn)) {
                         fillCell(cell);
                     } } }>
                 { /* display img conditionally */ }
-                { symbolSrc ? <img className="symbolIcon" src={symbolSrc} alt={cellContents}/> : '' }
+                { symbolSrc ? <object type="image/svg+xml" className="symbolIcon" data={symbolSrc} alt={cellContents}/> : '' }
                 </div>
         );
     }

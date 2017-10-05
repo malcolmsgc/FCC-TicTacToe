@@ -27,6 +27,11 @@
         flex: 1 auto;
         display: flex;
         justify-content: center;
+        &.winpath {
+            color: #F2C94C;
+            border: 0.5px solid #F2C94C;
+            background: #0C0C56;
+        }
     }
     .symbolIcon {
         flex: 1 auto;
