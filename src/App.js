@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Link, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Link, Switch, Redirect } from 'react-router-dom';
 import Header from './components/Header/Header.js';
 import NumPlayers from './screens/NumPlayers/NumPlayers.js';
 import EnterName from './screens/EnterName/EnterName.js';
@@ -24,7 +24,7 @@ class App extends React.Component {
       player2: {
         name: 'Player 2',
         useX: null, //boolean
-        playerIsComputer: false,
+        playerIsComputer: null,
         remoteLink: null,
       },
     }
@@ -97,25 +97,31 @@ class App extends React.Component {
           <BrowserRouter>
             <Switch>
               <Route exact path="/" render={ () => <NumPlayers isTwoPlayer={this.isTwoPlayer} />} />
-              <Route path="/name/:player" render={ ({match, history}) => <EnterName match={match}
-                                                                                    history={history}
-                                                                                    addName={this.addName}
-                                                                                    player2Link={this.state.player2.remoteLink}
-                                                                                    />
+              <Route path="/name/:player" render={ ({match, history}) => (this.state.player2.playerIsComputer === null) ?
+                                                                            (<Redirect to="/" />) :
+                                                                            (<EnterName match={match}
+                                                                            history={history}
+                                                                            addName={this.addName}
+                                                                            player2Link={this.state.player2.remoteLink}
+                                                                            />)
                                                   } />
-              <Route exact path="/xo" render={ ({match, history}) => <XorO  match={match}
+              <Route exact path="/xo" render={ ({match, history}) => (this.state.player2.playerIsComputer === null) ?
+                                                                            (<Redirect to="/" />) :
+                                                                            (<XorO  match={match}
                                                                             history={history}
                                                                             player1name={this.state.player1.name}
                                                                             p1useX={this.state.player1.useX}
                                                                             selectXO={this.selectXO}
                                                                             twoPlayer={!this.state.player2.playerIsComputer}
-                                                      /> }
+                                                      />) }
                                                 />
-              <Route path="/gameon" render={ ({match, history}) => <Game  player1={this.state.player1}
+              <Route path="/gameon" render={ ({match, history}) => (this.state.player2.playerIsComputer === null) ?
+                                                                          (<Redirect to="/" />) :
+                                                                          (<Game  player1={this.state.player1}
                                                                           player2={this.state.player2}
                                                                           match={match}
                                                                           history={history}
-                                                  /> }
+                                                  />) }
                                             />
               <Route component={notFound} />
             </Switch>
