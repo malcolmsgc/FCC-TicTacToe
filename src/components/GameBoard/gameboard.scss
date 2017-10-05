@@ -30,7 +30,12 @@
         &.winpath {
             color: #F2C94C;
             border: 0.5px solid #F2C94C;
-            background: #0C0C56;
+            &.p1win {
+                background: $color-player1;
+            }
+            &.p2win {
+                background: $color-player2;
+            } 
         }
     }
     .symbolIcon {

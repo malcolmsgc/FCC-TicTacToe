@@ -1,11 +1,5 @@
 <svg width="58" height="74" viewBox="0 0 58 74" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <title>Cross</title>
-<style>
-    svg {
-        --fill-color: #000;
-        fill: var(--fill-color);
-    }
-</style>
 <g id="Canvas" transform="translate(-795 -164)">
     <g class="cross">
             <g class="Line1">

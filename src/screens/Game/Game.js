@@ -45,6 +45,7 @@ class Game extends React.Component {
             gameWon: null,
             gamesPlayed: 0,
             wonPath: [], //array of 3 cell IDs as strings
+            winner: '', // class name for game cell
             player1: {
                 won: 0,
                 count: {
@@ -310,7 +311,7 @@ class Game extends React.Component {
         // use index value to enter if and pass index of category to showWonPath function
         // showWonPath function sets state for wonPath array
         console.log(gameWon);
-        if (gameWon > 0) {
+        if (gameWon >= 0) {
             const pathCategory = [ "diag1", "diag2", "row", "col" ][gameWon];
             // use style change to show win path
             this.showWonPath( pathCategory, rowCoord, colCoord );
@@ -551,8 +552,9 @@ class Game extends React.Component {
                 );
             }
         }
-        console.log(wonPath);
-        this.setState({ wonPath })
+        const winner = this.state.p1Turn ? "p1win" : "p2win";
+        console.log(winner, wonPath);
+        this.setState({ wonPath, winner })
     }
     
 
@@ -585,7 +587,8 @@ class Game extends React.Component {
                             fillCell={this.fillCell}
                             p2IsComp={this.props.player2.playerIsComputer} 
                             p1Turn={this.state.p1Turn} 
-                            wonPath={this.state.wonPath}/>
+                            wonPath={this.state.wonPath}
+                            winner={this.state.winner} />
                 <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => { this.props.history.goBack() } }/>
             </div>
         );

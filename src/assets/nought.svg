@@ -1,11 +1,5 @@
 <svg width="67" height="73" viewBox="0 0 67 73" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <title>Nought</title>
-<style>
-    svg {
-        --fill-color: #000;
-        fill: var(--fill-color);
-    }
-</style>
 <g id="Canvas" transform="translate(-691 -164)">
         <g class="nought">
             <mask id="mask0_alpha" mask-type="alpha">

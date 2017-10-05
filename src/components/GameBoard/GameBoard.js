@@ -39,6 +39,7 @@ class GameBoard extends React.Component {
                                     p2IsComp={this.props.p2IsComp}
                                     p1Turn={this.props.p1Turn}
                                     wonPath={this.props.wonPath}
+                                    winner={this.props.winner}
                                     />    
                     )
                 }
@@ -74,6 +75,7 @@ class BoardRow extends React.Component {
                                     p2IsComp={this.props.p2IsComp}
                                     p1Turn={this.props.p1Turn}
                                     wonPath={this.props.wonPath}
+                                    winner={this.props.winner}
                         /> )
                 }
             </div>
@@ -94,13 +96,13 @@ class BoardRow extends React.Component {
 class GameCell extends React.Component {
     
     render() {
-        const { cell, fillCell, cellContents, p2IsComp, p1Turn, wonPath } = this.props;
+        const { cell, fillCell, cellContents, p2IsComp, p1Turn, wonPath, winner } = this.props;
         const onWonPath = wonPath.includes(cell);
         let symbolSrc;
         if (cellContents === "X") symbolSrc = cross;
         else if (cellContents === "O") symbolSrc = nought;
         return (
-            <div className={onWonPath ? "game-cell winpath" : "game-cell"} onClick={ () => {
+            <div className={onWonPath ? `game-cell winpath ${winner}` : "game-cell"} onClick={ () => {
                     if (!p2IsComp || (p2IsComp && p1Turn)) {
                         fillCell(cell);
                     } } }>
