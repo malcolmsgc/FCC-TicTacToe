@@ -1,5 +1,4 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import BaseButton from '../BaseButton/BaseButton.js';
 import './enternameform.css';

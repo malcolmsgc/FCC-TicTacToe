@@ -11,7 +11,8 @@ class EnterName extends React.Component {
 
     render() {
         const player = this.props.match.params.player;
-        const showBlock = player === '1' ? false : true;
+        // const showBlock = player === '1' ? false : true;
+        const showBlock = false;
         return (
             <div className="EnterName">
                 <ShareLinkBlock player2Link={this.props.player2Link} showBlock={showBlock} />

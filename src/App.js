@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Link, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Header from './components/Header/Header.js';
 import NumPlayers from './screens/NumPlayers/NumPlayers.js';
 import EnterName from './screens/EnterName/EnterName.js';
@@ -68,9 +68,7 @@ class App extends React.Component {
   /* Create unique game link */
   /* uses date string converted to base 36 plus suffix of random base 16 numbers */
   createGameLink() {
-    const player2 = {...this.state.player2 }
-    const unique = (Date.now().toString(36) + (Math.random() * 10).toString(16).substr(2, 4));
-    return unique;
+    return (Date.now().toString(36) + (Math.random() * 10).toString(16).substr(2, 4));
   }
 
   /* Sets player X or O symbols based on single player choosing a symbol */
@@ -96,7 +94,7 @@ class App extends React.Component {
           <div className="app-wrapper">
           <BrowserRouter>
             <Switch>
-              <Route exact path="/" render={ () => <NumPlayers isTwoPlayer={this.isTwoPlayer} />} />
+              <Route exact path="/" render={ ( {history} ) => <NumPlayers isTwoPlayer={this.isTwoPlayer} history={history} />} />
               <Route path="/name/:player" render={ ({match, history}) => (this.state.player2.playerIsComputer === null) ?
                                                                             (<Redirect to="/" />) :
                                                                             (<EnterName match={match}
