@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import rebase from '../../rebase.js';
 import StatsBar from '../../components/StatsBar/StatsBar.js';
 import MessageBlock from '../../components/MessageBlock/MessageBlock.js';
 import ScoreBoard from '../../components/ScoreBoard/ScoreBoard.js';
@@ -21,48 +22,50 @@ class Game extends React.Component {
         this.compAsP2 = this.compAsP2.bind(this);
         this.setWinPathCount = this.setWinPathCount.bind(this);
         this.state = {
-            // boolean to show if a game has started (false) or is yet to start (true)
-            // used for message block
-            cleanBoard: null,
-            // which player started this game - should be swapped at game end
-            p1StartedGame: null,
-            // flag for each player turn - true mean it is P1 turn
-            p1Turn: null,
-            // state for cells in gameboard - get initialised with setBoard()
-            board: {},
-            boardinates: {
-                1: [1,1],
-                2: [1,2],
-                3: [1,3],
-                4: [2,1],
-                5: [2,2],
-                6: [2,3],
-                7: [3,1],
-                8: [3,2],
-                9: [3,3],
-            },
-            gameInPlay: null,
-            gameWon: null,
-            gamesPlayed: 0,
-            wonPath: [], //array of 3 cell IDs as strings
-            winner: '', // class name for game cell
-            player1: {
-                won: 0,
-                count: {
-                    diag: [0,0], //index 0 is top left to bottom right, 1 is top right to bottom left
-                    row: [0,0,0], // row 1-3
-                    col: [0,0,0], // column 1-3
-                }
-              },
-              player2: {
-                won: 0,
-                count: {
-                    diag: [0,0], //index 0 is top left to bottom right, 1 is top right to bottom left
-                    row: [0,0,0], // row 1-3
-                    col: [0,0,0], // column 1-3
-                }
-              },
-            gameMessage: null,
+            game : {
+                // boolean to show if a game has started (false) or is yet to start (true)
+                // used for message block
+                cleanBoard: null,
+                // which player started this game - should be swapped at game end
+                p1StartedGame: null,
+                // flag for each player turn - true mean it is P1 turn
+                p1Turn: null,
+                // state for cells in gameboard - get initialised with setBoard()
+                board: {},
+                boardinates: {
+                    1: [1,1],
+                    2: [1,2],
+                    3: [1,3],
+                    4: [2,1],
+                    5: [2,2],
+                    6: [2,3],
+                    7: [3,1],
+                    8: [3,2],
+                    9: [3,3],
+                },
+                gameInPlay: null,
+                gameWon: null,
+                gamesPlayed: 0,
+                wonPath: [], //array of 3 cell IDs as strings
+                winner: '', // class name for game cell
+                player1: {
+                    won: 0,
+                    count: {
+                        diag: [0,0], //index 0 is top left to bottom right, 1 is top right to bottom left
+                        row: [0,0,0], // row 1-3
+                        col: [0,0,0], // column 1-3
+                    }
+                  },
+                  player2: {
+                    won: 0,
+                    count: {
+                        diag: [0,0], //index 0 is top left to bottom right, 1 is top right to bottom left
+                        row: [0,0,0], // row 1-3
+                        col: [0,0,0], // column 1-3
+                    }
+                  },
+                gameMessage: null,
+            }
         };
     }
 
@@ -570,6 +573,15 @@ class Game extends React.Component {
         // set up fresh board
         // also triggers compAsP2 on board reset if P2 turn and P2 is computer
         this.setBoard();
+        // init firebase rebase listener for Game state
+        this.rebaseGameRef = rebase.syncState(
+        // use gamekey as id for FireBase DB
+        `${this.props.player2.gamekey}/game`,
+        {
+          context: this, //app class
+          state: 'game',
+        }
+      );
     }
         
     render() {

@@ -16,21 +16,22 @@ class App extends React.Component {
     this.selectXO = this.selectXO.bind(this);
     this.isTwoPlayer = this.isTwoPlayer.bind(this);
     this.createGameLink = this.createGameLink.bind(this);
-    this.setFirebaseListener = this.setFirebaseListener.bind(this);
     this.addName = this.addName.bind(this);
     this.state = {
-      player1: {
-        name: 'Player 1',
-        useX: null, //boolean
-      },
-      player2: {
-        name: 'Player 2',
-        useX: null, //boolean
-        playerIsComputer: null,
-        gamekey: null,
-      },
+      app:  {
+        player1: {
+          name: 'Player 1',
+          useX: null, //boolean
+        },
+        player2: {
+          name: 'Player 2',
+          useX: null, //boolean
+          playerIsComputer: null,
+          gamekey: null,
+        },
     }
-  }
+  };
+}
 
   /* --------- */
   /* APP LOGIC */
@@ -40,7 +41,8 @@ class App extends React.Component {
   /* also sets computer's player details if single player game */
   /* argument is boolean that relates to if 2 player game (true) or one (false) */
   isTwoPlayer(twoPlayer) {
-    const player2 = {...this.state.player2};
+    const app = {...this.state.app};
+    const player2 = app.player2;
     // set p2's playerIsComputer boolean
     player2.playerIsComputer = !twoPlayer;
     // if single player game set computer details for player 2
@@ -56,44 +58,38 @@ class App extends React.Component {
       else { console.log( 'P2 link already generated' ); }
       }
       // init firebase rebase listener for App state
-      this.rebase = { app: {} };
-      this.rebase.app.p1 = this.setFirebaseListener(player2.gamekey, 'player1', 'app');
-      this.rebase.app.p2 = this.setFirebaseListener(player2.gamekey, 'player2', 'app');
-    this.setState({ player2 });
+      this.rebase = {};
+      this.rebaseAppRef = rebase.syncState(
+        // use gamekey as id for FireBase DB
+        `${player2.gamekey}/app`,
+        {
+          context: this, //app class
+          state: 'app',
+        }
+      );
+      app.player2 = player2;
+    this.setState({ app });
   }
 
   addName({playerNum, playerName} = {}) {
-    const playerState = {...this.state[`player${playerNum}`]};
-    playerState.name = playerName;
-    this.setState({ [`player${playerNum}`]: playerState });
+    const app = {...this.state.app};
+    app[`player${playerNum}`]['name'] = playerName;
+    this.setState({ app });
   }
 
   /* Create unique game link */
   /* uses date string converted to base 36 plus suffix of random base 16 numbers */
   createGameLink() {
-    const player2 = {...this.state.player2 }
-    const unique = (Date.now().toString(36) + (Math.random() * 10).toString(16).substr(2, 4));
-    return unique;
-  }
-
-  setFirebaseListener(id, endpoint, branch) {
-    return rebase.syncState(
-      // use gamekey as id for FireBase DB
-      `${id}/${branch}`,
-      {
-        context: this, //app class
-        state: endpoint,
-      }
-    );
+    return (Date.now().toString(36) + (Math.random() * 10).toString(16).substr(2, 4));
   }
 
   /* Sets player X or O symbols based on single player choosing a symbol */
   /* argument is boolean that relates to if player one chose X */
   selectXO(p1useX) {
-    const state = {...this.state};
-    state.player1.useX = p1useX;
-    state.player2.useX = !p1useX;
-    this.setState({ player1: state.player1, player2: state.player2 });
+    const app = {...this.state.app};
+    app.player1.useX = p1useX;
+    app.player2.useX = !p1useX;
+    this.setState({ app });
   }
 
 
@@ -102,19 +98,15 @@ class App extends React.Component {
   /* ----------------- */
 
   componentWillUnmount() {
-    rebase.update(`${this.state.player2.gamekey}`, {
-       data: null
-      })
-      .then(() => {})
-      .catch( (err) => {console.error(`Rebase deletion on app unmounting unsuccessful: ${err}`)} );
-    rebase.removeBinding(this.rebase.app.p1);
-    rebase.removeBinding(this.rebase.app.p2);
+      rebase.removeBinding(this.rebase.app);
   }
 
-
+  componentWillMount() {
+    // remove old firebase DB entries
+}
 
   render() {
-    const p2isComp = this.state.player2.playerIsComputer;
+    const p2isComp = this.state.app.player2.playerIsComputer;
     return (
       <div className="App">
           <Header />
@@ -128,7 +120,7 @@ class App extends React.Component {
                                                                             match={match}
                                                                             history={history}
                                                                             addName={this.addName}
-                                                                            gamekey={this.state.player2.gamekey}
+                                                                            gamekey={this.state.app.player2.gamekey}
                                                                             />)
                       } 
               />
@@ -136,18 +128,18 @@ class App extends React.Component {
                       render={ ({match, history}) => (p2isComp === null) ?  (<Redirect to="/" />) :
                                                                             (<XorO  match={match}
                                                                             history={history}
-                                                                            player1name={this.state.player1.name}
-                                                                            p1useX={this.state.player1.useX}
+                                                                            player1name={this.state.app.player1.name}
+                                                                            p1useX={this.state.app.player1.useX}
                                                                             selectXO={this.selectXO}
-                                                                            twoPlayer={!this.state.player2.playerIsComputer}
-                                                                            gamekey={this.state.player2.gamekey}
+                                                                            twoPlayer={!this.state.app.player2.playerIsComputer}
+                                                                            gamekey={this.state.app.player2.gamekey}
                                                                             />) 
                       }
               />
               <Route  path="/gameon" 
                       render={ ({match, history}) => (p2isComp === null) ?  (<Redirect to="/" />) :
-                                                                            (<Game  player1={this.state.player1}
-                                                                            player2={this.state.player2}
+                                                                            (<Game  player1={this.state.app.player1}
+                                                                            player2={this.state.app.player2}
                                                                             match={match}
                                                                             history={history}
                                                                             />) 
