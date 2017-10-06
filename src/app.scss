@@ -7,6 +7,10 @@
     background-color: $color-background;
     min-height: 100vh;
     text-align: center;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: flex-start;
     .app-wrapper {
         width: 85vw;
         max-width: 768px;

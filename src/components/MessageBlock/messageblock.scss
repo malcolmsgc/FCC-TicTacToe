@@ -6,4 +6,11 @@ p {
     font-size: 2em;
     padding: 0.5em;
     line-height: 140%;
+    min-height: 2.5em;
+}
+
+@media screen and (max-width: 465px) {
+    p {
+        font-size: 1.5em;
+    }
 }

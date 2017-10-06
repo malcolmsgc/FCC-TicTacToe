@@ -9,3 +9,15 @@
         margin-top: 3em;
     }
 }
+
+@media screen and (max-width: 465px) {
+    .game {
+        button[type="button"] {
+            margin-top: 1.8em
+        }
+        p {
+            margin: 0.5em 0 0.2em;
+            min-height: 3.5em;
+            }
+    }
+}

@@ -47,3 +47,10 @@
         // line-height: 40%;
     }
 }
+
+@media screen and (max-width: 465px) {
+    .board .game-cell {
+        width: 8em;
+        height: 8em;
+    }
+}

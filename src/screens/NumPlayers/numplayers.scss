@@ -6,4 +6,12 @@
 
 .p2 {
     @include player2;
+    margin-top: 2.5em;
+}
+
+.num-players {
+    margin-top: 70px;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
 }
