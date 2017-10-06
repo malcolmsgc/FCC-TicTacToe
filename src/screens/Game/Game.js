@@ -21,6 +21,17 @@ class Game extends React.Component {
         this.handleScore = this.handleScore.bind(this);
         this.compAsP2 = this.compAsP2.bind(this);
         this.setWinPathCount = this.setWinPathCount.bind(this);
+        this.boardinates = {
+            1: [1,1],
+            2: [1,2],
+            3: [1,3],
+            4: [2,1],
+            5: [2,2],
+            6: [2,3],
+            7: [3,1],
+            8: [3,2],
+            9: [3,3],
+        },
         this.state = {
             game : {
                 // boolean to show if a game has started (false) or is yet to start (true)
@@ -32,17 +43,6 @@ class Game extends React.Component {
                 p1Turn: null,
                 // state for cells in gameboard - get initialised with setBoard()
                 board: {},
-                boardinates: {
-                    1: [1,1],
-                    2: [1,2],
-                    3: [1,3],
-                    4: [2,1],
-                    5: [2,2],
-                    6: [2,3],
-                    7: [3,1],
-                    8: [3,2],
-                    9: [3,3],
-                },
                 gameInPlay: null,
                 gameWon: null,
                 gamesPlayed: 0,
@@ -76,61 +76,65 @@ class Game extends React.Component {
     /* set or reset board */
     /* called before mounting app and after each game */
     setBoard() {
+        const game = {...this.state.game};
         const freshBoard = {};
         for (let i=1; i <= 9; i++) {
         freshBoard[i] = null;
         }
         if (this.props.player2.playerIsComputer) this.setWinPathCount();
-        this.setState( {    cleanBoard: true,
-                            board: freshBoard,
-                            gameInPlay: true,
-                            gameWon: false,
-                            wonPath: [],
-                        }, 
+        game.cleanBoard = true;
+        game.board = freshBoard;
+        game.gameInPlay = true;
+        game.gameWon = false;
+        game.wonPath = [];
+        this.setState( { game }, 
                         () => { 
-                            const gameMessage = this.handleMessageText();
-                            this.setState({ gameMessage }); 
+                            game.gameMessage = this.handleMessageText();
+                            this.setState({ game }); 
                         });
         // trigger compAsP2 on board reset if P2 turn and P2 is computer
-        if (!this.state.p1Turn && this.props.player2.playerIsComputer) {
+        if (!this.state.game.p1Turn && this.props.player2.playerIsComputer) {
             setTimeout(this.compAsP2, 2000)
         }
     }
 
     //randomly decide which player gets first turn for game 1
     firstTurn() {
-        const p1Turn = Math.random() >= 0.5;
-        this.setState({ p1Turn, p1StartedGame: p1Turn });
+        const game = {...this.state.game};
+        game.p1Turn = Math.random() >= 0.5;
+        game.p1StartedGame = game.p1Turn;
+        this.setState({ game });
     }
 
 
     /* changes state for board to update game cell */
     /* used in game cell to show correct symbol as svg or state value as alt attribute */
     fillCell(cell) {
+        const game = {...this.state.game};
         // return if game over
-        if (!this.state.gameInPlay) return;
+        if (!game.gameInPlay) return;
         // return if cell already filled
         // false flag used by compAsP2 to run recursively if a chosen cell is full
-        if (this.state.board[cell]) return false;
+        if (game.board[cell]) return false;
         // error is cell value higher than numbers in grid
         if (cell < 1 || cell > 9 ) {
             const err = new Error(`Cell ${cell} does not exist`);
             console.error(err);
             return false;
         }
-        const board = {...this.state.board};
-        const symbol = this.state.p1Turn ?  ( this.props.player1.useX ? "X" : "O" ) :
-                                            ( this.props.player1.useX ? "O" : "X" );
-        board[cell] = symbol;
-        this.setState( { board, cleanBoard: false }, () => { this.runGameLogic(cell) } );
+        const symbol = game.p1Turn ?    ( this.props.player1.useX ? "X" : "O" ) :
+                                        ( this.props.player1.useX ? "O" : "X" );
+        game.board[cell] = symbol;
+        game.cleanBoard = false;
+        this.setState( { game }, () => { this.runGameLogic(cell) } );
         return true;
     }
 
     //TO DO handle messaging for end of game - announce winner
     handleMessageText() {
-        const { gameInPlay, cleanBoard, gameWon } = this.state;
+        const { p1Turn, gameInPlay, cleanBoard, gameWon } = this.state.game;
         let message;
-        const player = this.state.p1Turn ?  this.props.player1.name : this.props.player2.name;
+        const player = p1Turn ?  this.props.player1.name : this.props.player2.name;
         if (gameInPlay) {
             if (cleanBoard) {
                 message = `${player} to start`;
@@ -155,38 +159,33 @@ class Game extends React.Component {
     // function to update score
     // also handles switch of player turn
     handleScore() {
-        const state = {...this.state};
-        if (!state.gameInPlay) {
-            state.gameMessage = this.handleMessageText();
-            if (state.gameWon) {
-                if (state.p1Turn) { 
-                    state.player1.won++;
+        const game = {...this.state.game};
+        if (!game.gameInPlay) {
+            game.gameMessage = this.handleMessageText();
+            if (game.gameWon) {
+                if (game.p1Turn) { 
+                    game.player1.won++;
                 }
                 else {
-                    state.player2.won++;
+                    game.player2.won++;
                 }
             }
-            state.gamesPlayed++;
+            game.gamesPlayed++;
             //set first turn to player who went second at beginning of last game
-            state.p1Turn = !state.p1StartedGame;
-            state.p1StartedGame = !state.p1StartedGame;
+            game.p1Turn = !game.p1StartedGame;
+            game.p1StartedGame = !game.p1StartedGame;
             //update state for new game and updated scores.
-            this.setState({ p1Turn: state.p1Turn,
-                            p1StartedGame: state.p1StartedGame,
-                            player1: state.player1,
-                            player2: state.player2,
-                            gamesPlayed: state.gamesPlayed,
-                            gameMessage: state.gameMessage,
-                        }
-                            // can replace this callback setTimeout with a user event
-                        , () => { window.setTimeout(this.setBoard, 2800) } );
+            this.setState( { game },
+                // can replace this callback setTimeout with a user event
+                () => { window.setTimeout(this.setBoard, 2800) } );
         }
         else {
-            this.setState( { p1Turn: !state.p1Turn }, 
-                () => { state.gameMessage = this.handleMessageText();
-                    this.setState({ gameMessage: state.gameMessage });
+            game.p1Turn = !game.p1Turn;
+            this.setState( { game }, 
+                () => { game.gameMessage = this.handleMessageText();
+                    this.setState({ game });
                     // run compAsP2 if p2 turn and playerIsComputer set to true
-                    if (!this.state.p1Turn && this.props.player2.playerIsComputer) setTimeout(this.compAsP2, 2000);
+                    if (!game.p1Turn && this.props.player2.playerIsComputer) setTimeout(this.compAsP2, 2000);
                 }
             );
         }
@@ -208,19 +207,21 @@ class Game extends React.Component {
     gameInPlay(cellID) {
         // if board has been reset return true
         let gameActive;
-        if (this.state.cleanBoard) { gameActive = true }
+        let game = {...this.state.game};
+        if (game.cleanBoard) { gameActive = true }
         else {
-            const currentBoard = {...this.state.board};
+            const currentBoard = {...game.board};
             const cellNums = Object.keys(currentBoard);
             // check for values in cells
             const boardArray = cellNums.map( (cell) => currentBoard[cell] );
             // check for empty cells
             gameActive = boardArray.includes(null);
             // check for win and override gameActive if win criteria met
-            const gameWon = this.isGameWon(cellID);
-            gameActive = gameWon ? false : gameActive;
+            game.gameWon = this.isGameWon(cellID);
+            gameActive = game.gameWon ? false : gameActive;
+            game.gameInPlay = gameActive;
             // update state with new gameInPlay flag
-            this.setState({ gameInPlay: gameActive, gameWon },
+            this.setState({ game },
                 // callback runs handles score, which in turn has a setState call back to setBoard
                 // so that they state setting in each case is syncronous 
                                 () => {  this.handleScore(); } );
@@ -232,10 +233,11 @@ class Game extends React.Component {
     // corners need a single diagonal
     // then all cell positions needs checks on row and column
     isGameWon(cellKey) {
+        let game = {...this.state.game};
         const p2IsComputer = this.props.player2.playerIsComputer;
         const category = this.categoriseCell(cellKey);
-        const symbol = this.state.board[cellKey];
-        let [ rowCoord, colCoord ] = this.state.boardinates[cellKey];
+        const symbol = game.board[cellKey];
+        let [ rowCoord, colCoord ] = this.boardinates[cellKey];
         //initialise counters
         let diag1Count, diag2Count, rowCount = 1, colCount = 1;
         if (category === 'centre') {
@@ -294,8 +296,8 @@ class Game extends React.Component {
         console.log(`COUNTERS: diag1:${diag1Count}, diag2:${diag2Count}, row:${rowCount}, col:${colCount}`);
         // store counts for diags, rows, cols for comp to use as player 2
         if (p2IsComputer) {
-            const playerTurn = this.state.p1Turn ? 'player1' : 'player2';
-            const player = {...this.state[playerTurn]};
+            const playerTurn = game.p1Turn ? 'player1' : 'player2';
+            const player = {...game[playerTurn]};
             // initialise vars to hold count arrays
             let diag = [...player.count.diag];
             let row = [...player.count.row];
@@ -308,7 +310,8 @@ class Game extends React.Component {
             row.splice(rowCoord - 1, 1, rowCount);
             col.splice(colCoord - 1, 1, colCount);
             player.count = { diag, row, col };
-            this.setState({ [`${playerTurn}`]: player });
+            game[playerTurn] = player;
+            this.setState({ game });
         }
         const gameWon = [ diag1Count, diag2Count, rowCount, colCount ].findIndex( (count) => count >=3 );
         // use index value to enter if and pass index of category to showWonPath function
@@ -325,8 +328,8 @@ class Game extends React.Component {
 
     // used in isGameWon func to check number of cells in line with symbol
     checkCellSymbol(ActiveRowCoord, ActiveColCoord, symbol, counter) {
-        const { boardinates, board } = this.state;
-        for (const [cell, [rowCoord, colCoord]] of Object.entries(boardinates)) {
+        const { board } = this.state.game;
+        for (const [cell, [rowCoord, colCoord]] of Object.entries(this.boardinates)) {
             if (rowCoord === ActiveRowCoord && colCoord === ActiveColCoord) {
                 if (board[cell] === symbol) counter++;
             }
@@ -343,11 +346,11 @@ class Game extends React.Component {
 
     compAsP2() {
         // exit if player 1's turn
-        if (this.state.p1Turn) return;
+        if (this.state.game.p1Turn) return;
         console.log('****** compAsP2 ******');
         let     cellNum;
-        const   p1Count = this.state.player1.count,
-                p2Count = this.state.player2.count;
+        const   p1Count = this.state.game.player1.count,
+                p2Count = this.state.game.player2.count;
         
         // look for player 2 game winning moves
         let p2WinningCells = this.findWinningCells(p2Count, 2);
@@ -374,12 +377,11 @@ class Game extends React.Component {
         if (!symbolPlaced) {
             this.compAsP2();
         }
-
     }
 
     findWinningCells( countObject, numInWinPath = 2 ) {
-        const   { board, boardinates } = this.state;
-        const   boardinatesFlattened = Object.entries(boardinates); 
+        const   { board } = this.state.game;
+        const   boardinatesFlattened = Object.entries(this.boardinates); 
         let winCellsArray = Object.entries( countObject ).map( (array) => { 
             const [ category, countArray ] = array;
             // winCell var to show which cells would produce a winning move - shows coords
@@ -509,16 +511,17 @@ class Game extends React.Component {
             row: [0,0,0], // row 1-3
             col: [0,0,0], // column 1-3
         };
-        const { player1, player2 } = this.state;
-        player1.count = count;
-        player2.count = count;
-        this.setState({ player1, player2 });
+        let game = {...this.state.game};
+        game.player1.count = count;
+        game.player2.count = count;
+        this.setState({ game });
     }
 
     // called from inside isGameWon
     // pathCategory arg can be any of the following: "diag1", "diag2", "row", "col"
     // other co-ords are in 1-3 range in 9 block grid
     showWonPath( pathCategory, rowCoord, colCoord ) {
+        let game = {...this.state.game};
         const wonPathCoords = [];
         let wonPath = [];
         if (pathCategory === "diag1") {
@@ -543,7 +546,7 @@ class Game extends React.Component {
             }
             // match against boardinates values 
             // and insert matched boardinates key in wonPath array
-            const boardinates = Object.entries(this.state.boardinates);
+            const boardinates = Object.entries(this.boardinates);
             for ( let [ cell , coords ] of boardinates ) {
                 wonPathCoords.forEach(
                     (winArray) => {
@@ -555,9 +558,10 @@ class Game extends React.Component {
                 );
             }
         }
-        const winner = this.state.p1Turn ? "p1win" : "p2win";
+        const winner = game.p1Turn ? "p1win" : "p2win";
         console.log(winner, wonPath);
-        this.setState({ wonPath, winner })
+        [ game.wonPath, game.winner ] = [ wonPath, winner ]; 
+        this.setState({ game });
     }
     
 
@@ -585,22 +589,24 @@ class Game extends React.Component {
     }
         
     render() {
+        const  { player1, player2, p1Turn, gamesPlayed, gameMessage, board,
+                wonPath, winner } = this.state.game;
         return (
             <div className="game">
-                <ScoreBoard p1name={this.props.player1.name}
-                            p2name={this.props.player2.name}
-                            p1wins={this.state.player1.won}
-                            p2wins={this.state.player2.won} />
-                <StatsBar   player1={this.state.player1}
-                            player2={this.state.player2}
-                            gamesPlayed={this.state.gamesPlayed} />
-                <MessageBlock messageText={ this.state.gameMessage } />
-                <GameBoard  board={this.state.board} 
+                <ScoreBoard p1name={ this.props.player1.name} 
+                            p2name={ this.props.player2.name }
+                            p1wins={ player1.won }
+                            p2wins={ player2.won } />
+                <StatsBar   player1={ player1 }
+                            player2={ player2 }
+                            gamesPlayed={ gamesPlayed } />
+                <MessageBlock messageText={ gameMessage } />
+                <GameBoard  board={ board } 
                             fillCell={this.fillCell}
                             p2IsComp={this.props.player2.playerIsComputer} 
-                            p1Turn={this.state.p1Turn} 
-                            wonPath={this.state.wonPath}
-                            winner={this.state.winner} />
+                            p1Turn={ p1Turn } 
+                            wonPath={ wonPath }
+                            winner={ winner } />
                 <BaseButton buttonType="button" buttonText="Go Back" btnAction={ () => { this.props.history.goBack() } }/>
             </div>
         );
