@@ -26,7 +26,7 @@ class App extends React.Component {
         name: 'Player 2',
         useX: null, //boolean
         playerIsComputer: null,
-        remoteLink: null,
+        gamekey: null,
       },
     }
   }
@@ -48,8 +48,8 @@ class App extends React.Component {
     }
     // if 2 player generate unique game link
     // update state with link
-    if (twoPlayer && !player2.remoteLink) {
-      player2.remoteLink = this.createGameLink();
+    if (twoPlayer && !player2.gamekey) {
+      player2.gamekey = this.createGameLink();
     }
     else { console.log( 'P2 link already generated' ); }
     // update router with link
@@ -99,32 +99,37 @@ class App extends React.Component {
           <BrowserRouter>
             <Switch>
               <Route exact path="/" render={ () => <NumPlayers isTwoPlayer={this.isTwoPlayer} />} />
-              <Route path={p2isComp ? "/name/:player" : "/name/:player/:gamekey"} render={ ({match, history}) => (p2isComp === null) ?
-                                                                            (<Redirect to="/" />) :
-                                                                            (<EnterName match={match}
+              <Route  path="/name/:player"
+                      render={ ({match, history}) => (p2isComp === null) ?  (<Redirect to="/" />) :
+                                                                            (<EnterName 
+                                                                            match={match}
                                                                             history={history}
                                                                             addName={this.addName}
-                                                                            player2Link={this.state.player2.remoteLink}
+                                                                            gamekey={this.state.player2.gamekey}
                                                                             />)
-                                                  } />
-              <Route exact path={p2isComp ? "/xo" : "/xo/:gamekey"} render={ ({match, history}) => (p2isComp === null) ?
-                                                                            (<Redirect to="/" />) :
+                      } 
+              />
+              <Route  exact path="/xo" 
+                      render={ ({match, history}) => (p2isComp === null) ?  (<Redirect to="/" />) :
                                                                             (<XorO  match={match}
                                                                             history={history}
                                                                             player1name={this.state.player1.name}
                                                                             p1useX={this.state.player1.useX}
                                                                             selectXO={this.selectXO}
                                                                             twoPlayer={!this.state.player2.playerIsComputer}
-                                                      />) }
-                                                />
-              <Route path={p2isComp ? "/gameon/" : "/gameon/:gamekey"} render={ ({match, history}) => (this.state.player2.playerIsComputer === null) ?
-                                                                          (<Redirect to="/" />) :
-                                                                          (<Game  player1={this.state.player1}
-                                                                          player2={this.state.player2}
-                                                                          match={match}
-                                                                          history={history}
-                                                  />) }
-                                            />
+                                                                            gamekey={this.state.player2.gamekey}
+                                                                            />) 
+                      }
+              />
+              <Route  path={p2isComp ? "/gameon/" : "/gameon/:gamekey"} 
+                      render={ ({match, history}) => (p2isComp === null) ?  (<Redirect to="/" />) :
+                                                                            (<Game  player1={this.state.player1}
+                                                                            player2={this.state.player2}
+                                                                            match={match}
+                                                                            history={history}
+                                                                            />) 
+                      }
+              />
               <Route component={notFound} />
             </Switch>
           </BrowserRouter>

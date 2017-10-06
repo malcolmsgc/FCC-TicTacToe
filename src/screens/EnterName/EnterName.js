@@ -14,10 +14,11 @@ class EnterName extends React.Component {
         const showBlock = player === '1' ? false : true;
         return (
             <div className="EnterName">
-                <ShareLinkBlock player2Link={this.props.player2Link} showBlock={showBlock} />
+                <ShareLinkBlock gamekey={this.props.gamekey} showBlock={showBlock} match={this.props.match} />
                 <MessageBlock messageText={`Player ${player}, enter your name!`} />
                 <EnterNameForm  playerNum={player}
                                 history={this.props.history}
+                                gamekey={this.props.gamekey}
                                 addName={this.props.addName}
                                 />
                 <div>
@@ -31,8 +32,9 @@ class EnterName extends React.Component {
        
 EnterName.PropTypes = {
     history: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
     addName: PropTypes.func.isRequired,
-    player2Link: PropTypes.string.isRequired,
+    gamekey: PropTypes.string.isRequired,
   }
 
 export default EnterName;

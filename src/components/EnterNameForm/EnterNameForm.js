@@ -20,7 +20,7 @@ class EnterNameForm extends React.Component {
         }
         //      if player 2 
         else {
-            next = "/gameon";
+            next = `/gameon/${this.props.gamekey}`;
         }
         this.props.history.push(next);
     }
@@ -44,6 +44,8 @@ class EnterNameForm extends React.Component {
 EnterNameForm.PropTypes = {
     playerNum: PropTypes.string.isRequired,
     addName: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
+    gamekey: PropTypes.string.isRequired,
   }
 
 export default EnterNameForm;

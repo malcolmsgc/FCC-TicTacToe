@@ -20,7 +20,7 @@ handleSelected(changeEvent) {
 routeOnSubmit(event) {
     event.preventDefault();
     if (this.props.p1useX !== true && this.props.p1useX !== false) return;
-    const route = this.props.twoPlayer ? "/name/2" : "/gameon";
+    const route = this.props.twoPlayer ? `/name/2/${this.props.gamekey}` : "/gameon";
     this.props.history.push(route);
 }
 
