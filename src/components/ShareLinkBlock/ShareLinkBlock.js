@@ -9,7 +9,7 @@ componentDidMount() {
 }
 
 render() {
-    const player2Link = `${this.props.match.url}/${this.props.gamekey}`;
+    const player2Link = `${this.props.match.url}?game=${this.props.gamekey}`;
     return (
         <div className="msgblock-P2link hidden" ref={ (node) => {this.p2Link = node}}>
             <div className="wrapper">
