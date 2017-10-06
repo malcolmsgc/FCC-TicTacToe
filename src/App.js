@@ -16,6 +16,7 @@ class App extends React.Component {
     this.selectXO = this.selectXO.bind(this);
     this.isTwoPlayer = this.isTwoPlayer.bind(this);
     this.createGameLink = this.createGameLink.bind(this);
+    this.setFirebaseListener = this.setFirebaseListener.bind(this);
     this.addName = this.addName.bind(this);
     this.state = {
       player1: {
@@ -48,15 +49,16 @@ class App extends React.Component {
     }
     // if 2 player generate unique game link
     // update state with link
-    if (twoPlayer && !player2.gamekey) {
+    else {
+      if (twoPlayer && !player2.gamekey) {
       player2.gamekey = this.createGameLink();
-    }
-    else { console.log( 'P2 link already generated' ); }
-    // update router with link
-
-    // TO DO
-
-    // use hash as id for game on firebase
+      }
+      else { console.log( 'P2 link already generated' ); }
+      }
+      // init firebase rebase listener for App state
+      this.rebase = { app: {} };
+      this.rebase.app.p1 = this.setFirebaseListener(player2.gamekey, 'player1', 'app');
+      this.rebase.app.p2 = this.setFirebaseListener(player2.gamekey, 'player2', 'app');
     this.setState({ player2 });
   }
 
@@ -74,6 +76,17 @@ class App extends React.Component {
     return unique;
   }
 
+  setFirebaseListener(id, endpoint, branch) {
+    return rebase.syncState(
+      // use gamekey as id for FireBase DB
+      `${id}/${branch}`,
+      {
+        context: this, //app class
+        state: endpoint,
+      }
+    );
+  }
+
   /* Sets player X or O symbols based on single player choosing a symbol */
   /* argument is boolean that relates to if player one chose X */
   selectXO(p1useX) {
@@ -87,6 +100,16 @@ class App extends React.Component {
   /* ----------------- */
   /* LIFECYCLE METHODS */
   /* ----------------- */
+
+  componentWillUnmount() {
+    rebase.update(`${this.state.player2.gamekey}`, {
+       data: null
+      })
+      .then(() => {})
+      .catch( (err) => {console.error(`Rebase deletion on app unmounting unsuccessful: ${err}`)} );
+    rebase.removeBinding(this.rebase.app.p1);
+    rebase.removeBinding(this.rebase.app.p2);
+  }
 
 
 
