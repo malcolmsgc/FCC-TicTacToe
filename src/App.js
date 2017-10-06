@@ -121,7 +121,7 @@ class App extends React.Component {
                                                                             />) 
                       }
               />
-              <Route  path="/gameon/" 
+              <Route  path="/gameon" 
                       render={ ({match, history}) => (p2isComp === null) ?  (<Redirect to="/" />) :
                                                                             (<Game  player1={this.state.player1}
                                                                             player2={this.state.player2}
