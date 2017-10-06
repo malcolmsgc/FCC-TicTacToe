@@ -8,6 +8,7 @@ class EnterNameForm extends React.Component {
 
     getName(e) {
         let next = "/";
+        let query = '';
         e.preventDefault(); 
         // add player name to state
         // takes player number and player name as args
@@ -20,9 +21,10 @@ class EnterNameForm extends React.Component {
         }
         //      if player 2 
         else {
-            next = `/gameon/${this.props.gamekey}`;
+            next = `/gameon`;
+            query = `?game=${this.props.gamekey}`;
         }
-        this.props.history.push(next);
+        this.props.history.push({ pathname: next, search: query});
     }
     
 
