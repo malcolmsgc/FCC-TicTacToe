@@ -24,7 +24,9 @@ $font-stack2: Arial, "Helvetica Neue", Helvetica, sans-serif;
     justify-content: space-between;
     align-items: stretch;
     // min-height: 55vh;
-    max-height: 95vh;
+    @media only screen and (orientation: portrait) {
+        max-height: 95vh;
+    }
 }
 
 @mixin player1 {
