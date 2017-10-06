@@ -56,18 +56,18 @@ class App extends React.Component {
       player2.gamekey = this.createGameLink();
       }
       else { console.log( 'P2 link already generated' ); }
-      }
       // init firebase rebase listener for App state
-      this.rebase = {};
       this.rebaseAppRef = rebase.syncState(
         // use gamekey as id for FireBase DB
         `${player2.gamekey}/app`,
         {
           context: this, //app class
           state: 'app',
+          defaultValue: app,
         }
-      );
-      app.player2 = player2;
+    });
+    app.player2 = player2;
+    console.log(app);
     this.setState({ app });
   }
 
@@ -98,7 +98,7 @@ class App extends React.Component {
   /* ----------------- */
 
   componentWillUnmount() {
-      rebase.removeBinding(this.rebase.app);
+      rebase.removeBinding(this.rebaseAppRef);
   }
 
   componentWillMount() {

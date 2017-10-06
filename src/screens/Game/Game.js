@@ -329,7 +329,8 @@ class Game extends React.Component {
     // used in isGameWon func to check number of cells in line with symbol
     checkCellSymbol(ActiveRowCoord, ActiveColCoord, symbol, counter) {
         const { board } = this.state.game;
-        for (const [cell, [rowCoord, colCoord]] of Object.entries(this.boardinates)) {
+        const boardinates = this.boardinates;
+        for (const [cell, [rowCoord, colCoord]] of Object.entries(boardinates)) {
             if (rowCoord === ActiveRowCoord && colCoord === ActiveColCoord) {
                 if (board[cell] === symbol) counter++;
             }
@@ -559,9 +560,9 @@ class Game extends React.Component {
             }
         }
         const winner = game.p1Turn ? "p1win" : "p2win";
-        console.log(winner, wonPath);
         [ game.wonPath, game.winner ] = [ wonPath, winner ]; 
-        this.setState({ game });
+        console.log(game.winner, game.wonPath);
+        this.setState({ game }, () => alert(this.state.game.wonPath));
     }
     
 
@@ -571,21 +572,27 @@ class Game extends React.Component {
 
 
     componentWillMount() {
+        let game = {...this.state.game};
         // set up counter and booleans to handle player turns between games
         // must run before setBoard so compAsP2 triggers accurately
         this.firstTurn();
         // set up fresh board
         // also triggers compAsP2 on board reset if P2 turn and P2 is computer
+        // and initialises firebase rebase listener for Game state
         this.setBoard();
-        // init firebase rebase listener for Game state
-        this.rebaseGameRef = rebase.syncState(
-        // use gamekey as id for FireBase DB
-        `${this.props.player2.gamekey}/game`,
-        {
-          context: this, //app class
-          state: 'game',
-        }
-      );
+    //     this.rebaseGameRef = rebase.syncState(
+    //     // use gamekey as id for FireBase DB
+    //     `${this.props.player2.gamekey}/game`,
+    //     {
+    //       context: this, //app class
+    //       state: 'game',
+    //       defaultValue: game,
+    //     }
+    //   );
+    }
+
+    componentWillUnmount() {
+        rebase.removeBinding(this.rebaseGameRef);
     }
         
     render() {
